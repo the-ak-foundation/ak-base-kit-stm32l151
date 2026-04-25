@@ -41,7 +41,7 @@
 
 #include "led.h"
 #include "eeprom.h"
-#include "Adafruit_ssd1306syp.h"
+#include "Adafruit_oled_drv.h"
 #include "flash.h"
 
 #include "qrcode.h"

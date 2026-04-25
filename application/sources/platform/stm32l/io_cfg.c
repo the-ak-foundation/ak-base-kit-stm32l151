@@ -390,112 +390,112 @@ uint32_t sys_ctr_get_mcu_temperature() {
 /******************************************************************************
 * ssd1306 oled IO function
 *******************************************************************************/
-void ssd1306_clk_input_mode() {
+void oled_clk_input_mode() {
 	GPIO_InitTypeDef    GPIO_InitStructure;
 
-	RCC_AHBPeriphClockCmd(SSD1306_CLK_IO_CLOCK, ENABLE);
-	GPIO_InitStructure.GPIO_Pin = SSD1306_CLK_IO_PIN;
+	RCC_AHBPeriphClockCmd(OLED_CLK_IO_CLOCK, ENABLE);
+	GPIO_InitStructure.GPIO_Pin = OLED_CLK_IO_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-	GPIO_Init(SSD1306_CLK_IO_PORT, &GPIO_InitStructure);
+	GPIO_Init(OLED_CLK_IO_PORT, &GPIO_InitStructure);
 }
 
-void ssd1306_clk_output_mode() {
+void oled_clk_output_mode() {
 	GPIO_InitTypeDef    GPIO_InitStructure;
 
-	RCC_AHBPeriphClockCmd(SSD1306_CLK_IO_CLOCK, ENABLE);
+	RCC_AHBPeriphClockCmd(OLED_CLK_IO_CLOCK, ENABLE);
 
-	GPIO_InitStructure.GPIO_Pin = SSD1306_CLK_IO_PIN;
+	GPIO_InitStructure.GPIO_Pin = OLED_CLK_IO_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_Init(SSD1306_CLK_IO_PORT, &GPIO_InitStructure);
+	GPIO_Init(OLED_CLK_IO_PORT, &GPIO_InitStructure);
 }
 
-void ssd1306_clk_digital_write_low() {
-	GPIO_ResetBits(SSD1306_CLK_IO_PORT,SSD1306_CLK_IO_PIN);
+void oled_clk_digital_write_low() {
+	GPIO_ResetBits(OLED_CLK_IO_PORT,OLED_CLK_IO_PIN);
 }
 
-void ssd1306_clk_digital_write_high() {
-	GPIO_SetBits(SSD1306_CLK_IO_PORT,SSD1306_CLK_IO_PIN);
+void oled_clk_digital_write_high() {
+	GPIO_SetBits(OLED_CLK_IO_PORT,OLED_CLK_IO_PIN);
 }
 
-int ssd1306_clk_digital_read() {
-	return (int)(GPIO_ReadInputDataBit(SSD1306_CLK_IO_PORT, SSD1306_CLK_IO_PIN));
+int oled_clk_digital_read() {
+	return (int)(GPIO_ReadInputDataBit(OLED_CLK_IO_PORT, OLED_CLK_IO_PIN));
 }
 
-void ssd1306_data_input_mode() {
+void oled_data_input_mode() {
 	GPIO_InitTypeDef    GPIO_InitStructure;
 
-	RCC_AHBPeriphClockCmd(SSD1306_DATA_IO_CLOCK, ENABLE);
-	GPIO_InitStructure.GPIO_Pin = SSD1306_DATA_IO_PIN;
+	RCC_AHBPeriphClockCmd(OLED_DATA_IO_CLOCK, ENABLE);
+	GPIO_InitStructure.GPIO_Pin = OLED_DATA_IO_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-	GPIO_Init(SSD1306_DATA_IO_PORT, &GPIO_InitStructure);
+	GPIO_Init(OLED_DATA_IO_PORT, &GPIO_InitStructure);
 }
 
-void ssd1306_data_output_mode() {
+void oled_data_output_mode() {
 	GPIO_InitTypeDef    GPIO_InitStructure;
-	RCC_AHBPeriphClockCmd(SSD1306_DATA_IO_CLOCK, ENABLE);
-	GPIO_InitStructure.GPIO_Pin = SSD1306_DATA_IO_PIN;
+	RCC_AHBPeriphClockCmd(OLED_DATA_IO_CLOCK, ENABLE);
+	GPIO_InitStructure.GPIO_Pin = OLED_DATA_IO_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_Init(SSD1306_DATA_IO_PORT, &GPIO_InitStructure);
+	GPIO_Init(OLED_DATA_IO_PORT, &GPIO_InitStructure);
 }
 
-void ssd1306_data_digital_write_low() {
-	GPIO_ResetBits(SSD1306_DATA_IO_PORT, SSD1306_DATA_IO_PIN);
+void oled_data_digital_write_low() {
+	GPIO_ResetBits(OLED_DATA_IO_PORT, OLED_DATA_IO_PIN);
 }
 
-void ssd1306_data_digital_write_high() {
-	GPIO_SetBits(SSD1306_DATA_IO_PORT, SSD1306_DATA_IO_PIN);
+void oled_data_digital_write_high() {
+	GPIO_SetBits(OLED_DATA_IO_PORT, OLED_DATA_IO_PIN);
 }
 
-int ssd1306_data_digital_read() {
-	return (int)(GPIO_ReadInputDataBit(SSD1306_DATA_IO_PORT, SSD1306_DATA_IO_PIN));
+int oled_data_digital_read() {
+	return (int)(GPIO_ReadInputDataBit(OLED_DATA_IO_PORT, OLED_DATA_IO_PIN));
 }
 
 /* SH1106 driver */
-void ssd1306_res_input_mode() {
+void oled_res_input_mode() {
 	GPIO_InitTypeDef    GPIO_InitStructure;
 
-	RCC_AHBPeriphClockCmd(SSD1306_RES_IO_CLOCK, ENABLE);
-	GPIO_InitStructure.GPIO_Pin = SSD1306_RES_IO_PIN;
+	RCC_AHBPeriphClockCmd(OLED_RES_IO_CLOCK, ENABLE);
+	GPIO_InitStructure.GPIO_Pin = OLED_RES_IO_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-	GPIO_Init(SSD1306_RES_IO_PORT, &GPIO_InitStructure);
+	GPIO_Init(OLED_RES_IO_PORT, &GPIO_InitStructure);
 }
 
-void ssd1306_res_output_mode() {
+void oled_res_output_mode() {
 	GPIO_InitTypeDef    GPIO_InitStructure;
-	RCC_AHBPeriphClockCmd(SSD1306_RES_IO_CLOCK, ENABLE);
-	GPIO_InitStructure.GPIO_Pin = SSD1306_RES_IO_PIN;
+	RCC_AHBPeriphClockCmd(OLED_RES_IO_CLOCK, ENABLE);
+	GPIO_InitStructure.GPIO_Pin = OLED_RES_IO_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_Init(SSD1306_RES_IO_PORT, &GPIO_InitStructure);
+	GPIO_Init(OLED_RES_IO_PORT, &GPIO_InitStructure);
 }
 
-void ssd1306_res_digital_write_low() {
-	GPIO_ResetBits(SSD1306_RES_IO_PORT, SSD1306_RES_IO_PIN);
+void oled_res_digital_write_low() {
+	GPIO_ResetBits(OLED_RES_IO_PORT, OLED_RES_IO_PIN);
 }
 
-void ssd1306_res_digital_write_high() {
-	GPIO_SetBits(SSD1306_RES_IO_PORT, SSD1306_RES_IO_PIN);
+void oled_res_digital_write_high() {
+	GPIO_SetBits(OLED_RES_IO_PORT, OLED_RES_IO_PIN);
 }
 
-int ssd1306_res_digital_read() {
-	return (int)(GPIO_ReadInputDataBit(SSD1306_RES_IO_PORT, SSD1306_RES_IO_PIN));
+int oled_res_digital_read() {
+	return (int)(GPIO_ReadInputDataBit(OLED_RES_IO_PORT, OLED_RES_IO_PIN));
 }
 
 /******************************************************************************

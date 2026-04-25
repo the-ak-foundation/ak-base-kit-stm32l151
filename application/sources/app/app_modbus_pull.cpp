@@ -67,7 +67,9 @@ MB_DeviceStruct_t MB_LHIO404_IO_Device = {
 
 /* Private functions prototypes -----------------------------------------------*/
 static eMBErrorCode appMBMasterRead(UCHAR slAddr, uint8_t funCode, USHORT addReg, USHORT *buf);
+#if 0
 static eMBErrorCode appMBMasterWrite(UCHAR slAddr, uint8_t funCode, USHORT addReg, USHORT val);
+#endif
 
 /* Function implementation ---------------------------------------------------*/
 void updateDataModbusDevice(MB_DeviceStruct_t *mbDevice) {
@@ -129,6 +131,7 @@ eMBErrorCode appMBMasterRead(UCHAR slAddr, uint8_t funCode, USHORT addReg, USHOR
 	return errCodeRet;
 }
 
+#if 0
 eMBErrorCode appMBMasterWrite(UCHAR slAddr, uint8_t funCode, USHORT addReg, USHORT val) {
 	eMBErrorCode errCodeRet = MB_ENOERR;
 
@@ -159,3 +162,4 @@ eMBErrorCode appMBMasterWrite(UCHAR slAddr, uint8_t funCode, USHORT addReg, USHO
 
 	return errCodeRet;
 }
+#endif

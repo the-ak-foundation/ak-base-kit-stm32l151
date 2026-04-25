@@ -4,45 +4,45 @@
 
 void pinMode(uint8_t pin, uint8_t mode) {
 	switch (pin) {
-	case SSD1306_CLK_PIN:
+	case OLED_CLK_PIN:
 		if (mode == INPUT) {
-			ssd1306_clk_input_mode();
+			oled_clk_input_mode();
 		}
 		else if (mode == OUTPUT) {
-			ssd1306_clk_output_mode();
+			oled_clk_output_mode();
 		}
 		else if (mode == INPUT_PULLUP) {
-			ssd1306_clk_input_mode();
+			oled_clk_input_mode();
 		}
 		else {
 			FATAL("AR", 0x01);
 		}
 		break;
 
-	case SSD1306_DATA_PIN:
+	case OLED_DATA_PIN:
 		if (mode == INPUT) {
-			ssd1306_data_input_mode();
+			oled_data_input_mode();
 		}
 		else if (mode == OUTPUT) {
-			ssd1306_data_output_mode();
+			oled_data_output_mode();
 		}
 		else if (mode == INPUT_PULLUP) {
-			ssd1306_data_input_mode();
+			oled_data_input_mode();
 		}
 		else {
 			FATAL("AR", 0x01);
 		}
 		break;
 
-	case SSD1306_RES_PIN:
+	case OLED_RES_PIN:
 		if (mode == INPUT) {
-			ssd1306_res_input_mode();
+			oled_res_input_mode();
 		}
 		else if (mode == OUTPUT) {
-			ssd1306_res_output_mode();
+			oled_res_output_mode();
 		}
 		else if (mode == INPUT_PULLUP) {
-			ssd1306_res_input_mode();
+			oled_res_input_mode();
 		}
 		else {
 			FATAL("AR", 0x01);
@@ -57,36 +57,36 @@ void pinMode(uint8_t pin, uint8_t mode) {
 
 void digitalWrite(uint8_t pin, uint8_t val) {
 	switch (pin) {
-	case SSD1306_CLK_PIN:
+	case OLED_CLK_PIN:
 		if (val == HIGH) {
-			ssd1306_clk_digital_write_high();
+			oled_clk_digital_write_high();
 		}
 		else if (val == LOW) {
-			ssd1306_clk_digital_write_low();
+			oled_clk_digital_write_low();
 		}
 		else {
 			FATAL("AR", 0x02);
 		}
 		break;
 
-	case SSD1306_DATA_PIN:
+	case OLED_DATA_PIN:
 		if (val == HIGH) {
-			ssd1306_data_digital_write_high();
+			oled_data_digital_write_high();
 		}
 		else if (val == LOW) {
-			ssd1306_data_digital_write_low();
+			oled_data_digital_write_low();
 		}
 		else {
 			FATAL("AR", 0x02);
 		}
 		break;
 
-	case SSD1306_RES_PIN:
+	case OLED_RES_PIN:
 		if (val == HIGH) {
-			ssd1306_res_digital_write_high();
+			oled_res_digital_write_high();
 		}
 		else if (val == LOW) {
-			ssd1306_res_digital_write_low();
+			oled_res_digital_write_low();
 		}
 		else {
 			FATAL("AR", 0x02);
@@ -102,18 +102,18 @@ void digitalWrite(uint8_t pin, uint8_t val) {
 int digitalRead(uint8_t pin) {
 	int val = 0;
 	switch (pin) {
-	case SSD1306_CLK_PIN: {
-		val = ssd1306_clk_digital_read();
+	case OLED_CLK_PIN: {
+		val = oled_clk_digital_read();
 	}
 		break;
 
-	case SSD1306_DATA_PIN: {
-		val = ssd1306_data_digital_read();
+	case OLED_DATA_PIN: {
+		val = oled_data_digital_read();
 	}
 		break;
 
-	case SSD1306_RES_PIN: {
-		val = ssd1306_res_digital_read();
+	case OLED_RES_PIN: {
+		val = oled_res_digital_read();
 	}
 		break;
 	default:

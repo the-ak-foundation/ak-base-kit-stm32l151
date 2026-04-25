@@ -31,22 +31,22 @@ extern "C"
 /******************************************************************************
  *Pin map button
 *******************************************************************************/
-#define BUTTON_MODE_IO_PIN				(GPIO_Pin_3)
+#define BUTTON_MODE_IO_PIN				(GPIO_Pin_4)
 #define BUTTON_MODE_IO_PORT				(GPIOB)
 #define BUTTON_MODE_IO_CLOCK			(RCC_AHBPeriph_GPIOB)
 
-#define BUTTON_UP_IO_PIN				(GPIO_Pin_4)
-#define BUTTON_UP_IO_PORT				(GPIOB)
-#define BUTTON_UP_IO_CLOCK				(RCC_AHBPeriph_GPIOB)
+#define BUTTON_UP_IO_PIN				(GPIO_Pin_13)
+#define BUTTON_UP_IO_PORT				(GPIOC)
+#define BUTTON_UP_IO_CLOCK				(RCC_AHBPeriph_GPIOC)
 
-#define BUTTON_DOWN_IO_PIN				(GPIO_Pin_13)
-#define BUTTON_DOWN_IO_PORT				(GPIOC)
-#define BUTTON_DOWN_IO_CLOCK			(RCC_AHBPeriph_GPIOC)
+#define BUTTON_DOWN_IO_PIN				(GPIO_Pin_3)
+#define BUTTON_DOWN_IO_PORT				(GPIOB)
+#define BUTTON_DOWN_IO_CLOCK			(RCC_AHBPeriph_GPIOB)
 
 /*****************************************************************************
  *Pin map led life
 ******************************************************************************/
-#define LED_LIFE_IO_PIN					(GPIO_Pin_11)
+#define LED_LIFE_IO_PIN					(GPIO_Pin_8)
 #define LED_LIFE_IO_PORT				(GPIOB)
 #define LED_LIFE_IO_CLOCK				(RCC_AHBPeriph_GPIOB)
 

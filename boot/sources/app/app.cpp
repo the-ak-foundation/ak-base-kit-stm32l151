@@ -70,6 +70,38 @@ int boot_main() {
 	sys_boot_init();
 	sys_boot_get(&app_sys_boot);
 
+#if 0
+	APP_PRINT("\n[b_fwc] psk: 0x%08X checksum: 0x%08X bin_len: %d\n", \
+					app_sys_boot.current_fw_boot_header.psk, \
+					app_sys_boot.current_fw_boot_header.checksum, \
+					app_sys_boot.current_fw_boot_header.bin_len);
+	APP_PRINT("[b_fwu] psk: 0x%08X checksum: 0x%08X bin_len: %d\n", \
+				app_sys_boot.update_fw_boot_header.psk, \
+				app_sys_boot.update_fw_boot_header.checksum, \
+				app_sys_boot.update_fw_boot_header.bin_len);
+	APP_PRINT("[b_cmd] cmd: %d container:%d io_driver: %d des_addr: 0x%08X src_addr: 0x%08X\n", \
+				app_sys_boot.fw_boot_cmd.cmd, \
+				app_sys_boot.fw_boot_cmd.container, \
+				app_sys_boot.fw_boot_cmd.io_driver, \
+				app_sys_boot.fw_boot_cmd.des_addr, \
+				app_sys_boot.fw_boot_cmd.src_addr);
+
+	APP_PRINT("\n[a_fwc] psk: 0x%08X checksum: 0x%08X bin_len: %d\n", \
+				app_sys_boot.current_fw_app_header.psk, \
+				app_sys_boot.current_fw_app_header.checksum, \
+				app_sys_boot.current_fw_app_header.bin_len);
+	APP_PRINT("[a_fwu] psk: 0x%08X checksum: 0x%08X bin_len: %d\n", \
+				app_sys_boot.update_fw_app_header.psk, \
+				app_sys_boot.update_fw_app_header.checksum, \
+				app_sys_boot.update_fw_app_header.bin_len);
+	APP_PRINT("[a_cmd] cmd: %d container:%d io_driver: %d des_addr: 0x%08X src_addr: 0x%08X\n", \
+				app_sys_boot.fw_app_cmd.cmd, \
+				app_sys_boot.fw_app_cmd.container, \
+				app_sys_boot.fw_app_cmd.io_driver, \
+				app_sys_boot.fw_app_cmd.des_addr, \
+				app_sys_boot.fw_app_cmd.src_addr);
+#endif
+
 	EXIT_CRITICAL();
 
 	/**************************************************************************
@@ -219,8 +251,17 @@ int boot_main() {
 		 * waiting load application
 		 */
 		APP_PRINT("[BOOT] unexpected status\n");
+#if 0
 		APP_PRINT("[BOOT] start application\n");
 		jump_to_application_before_reset_peripheral();
+#else
+		APP_PRINT("[BOOT] uart boot started\n");
+
+		led_blink_set(&led_life, 250, 50);
+
+		while (1) {
+		}
+#endif
 	}
 
 	return 0;
@@ -419,6 +460,10 @@ void uart_boot_cmd_checksum_fw_res(void*) {
 
 	if ((uint16_t)(check_sum_cal & 0xFFFF) == (uint16_t)app_sys_boot.update_fw_app_header.checksum) {
 		uart_boot_cmd_res.subcmd	= UART_BOOT_SUB_CMD_1;
+
+		/* Setting boot jump to app */
+		app_sys_boot.fw_app_cmd.cmd = SYS_BOOT_CMD_NONE;
+		app_sys_boot.current_fw_app_header.psk = FIRMWARE_PSK;
 	}
 	else {
 		uart_boot_cmd_res.subcmd	= UART_BOOT_SUB_CMD_2;
