@@ -1,34 +1,45 @@
-## AK Embedded Base Kit - STM32L151 - Lập trình nhúng vi điều khiển
+# Node-RTS: Three Kingdoms Conquest
 
-[<img src="hardware/images/ak-foundation-logo.png" width="240"/>](https://github.com/the-ak-foundation)
+This project is a graph-based Real-Time Strategy (RTS) game developed for the **STM32L151** microcontroller using the **AK Base Kit** framework. It was created as part of the **FPT Telecom Embedded Bootcamp**.
 
-Heartfelt thanks to [EPCB](https://epcb.vn/pages/frontpage) for standing with the AK Foundation and empowering our mission.
+## Project Overview
+The game, inspired by the **Three Kingdoms** era, challenges players to command troops and capture strategic nodes on a graph. Players must manage resources (troops), secure supply lines, and outmaneuver AI-controlled rival warlords.
 
-AK Embedded Base Kit is an evaluation kit for advanced embedded software learners.
-- The KIT integrates 1.54" Oled LCD, 3 push buttons, and 1 Buzzers that play music, to learn the event-driven system through hands-on game machine design.
-- The KIT also integrates RS485, Qwiic Connect System, and Grove Ecosystems, suitable for prototyping practical applications in embedded systems.
+## Key Features
+- **Graph-Based Gameplay:** Nodes represent strategic locations (cities/passes) connected by edges (supply routes).
+- **Three Kingdoms Theme:** Command factions (e.g., Liu Bei vs. Cao Cao) with unique tactical focuses.
+- **Resource Management:** Automatic troop generation at owned nodes with caps and scaling based on node level.
+- **Dynamic AI:** Opponents with distinct personalities (Aggressive, Turtle, Opportunistic).
+- **Hero System:** Powerful generals with unique skills (e.g., "Fire Attack") that can turn the tide of battle.
 
-[<img src="hardware/images/ak-embedded-base-kit-version-3.jpg" width="480"/>](https://epcb.vn/products/ak-embedded-base-kit-lap-trinh-nhung-vi-dieu-khien-mcu)
+## Development Roadmap
+The project follows a 3-week development cycle:
 
-### Memory map
-- [ 0x08000000 ] : **Boot** [[ak-base-kit-stm32l151-boot.bin]](https://github.com/ak-embedded-software/ak-base-kit-stm32l151/blob/main/hardware/bin/ak-base-kit-stm32l151-boot.bin)
-- [ 0x08002000 ] : **BSF** [ Memory for data sharing between Boot and Application ]
-- [ 0x08003000 ] : **Application** [[ak-base-kit-stm32l151-application.bin]](https://github.com/ak-embedded-software/ak-base-kit-stm32l151/blob/main/hardware/bin/ak-base-kit-stm32l151-application.bin)
+### Week 1: Core Foundation
+- Basic graph rendering (5-8 nodes).
+- Troop spawning and movement logic.
+- Local Player vs. Player (PvP) mechanics.
+- **Milestone:** A playable core where nodes can be captured.
 
-**Note:** After loading boot & application firmware, you can use [AK - Flash](https://github.com/ak-embedded-software/ak-flash) to load the application directly through the **USB** port on the KIT
-```sh
-ak_flash /dev/ttyUSB0 ak-base-kit-stm32l151-application.bin 0x08003000
-```
+### Week 2: Tactical Depth
+- **Supply Lines:** Isolating nodes leads to "starvation" (troop loss).
+- **AI Integration:** Rival generals with specific behavioral patterns.
+- **Fog of War:** Strategic visibility limited to controlled nodes and paths.
 
-### Hardware
-**Schematic** [[schematic-ak-embedded-base-kit-version-3.pdf]](https://github.com/ak-embedded-software/ak-base-kit-stm32l151/blob/main/hardware/schematic/schematic-ak-embedded-base-kit-version-3.pdf)
+### Week 3: Replayability & Polish
+- **Procedural Maps:** Randomly generated node layouts for every match.
+- **Hero System:** Integration of special skills and troop division (25/50/75/100%).
+- **Random Events:** Environmental and political events saved to Flash memory.
 
-[<img src="hardware/images/board-view-top.png" width="480"/>](https://epcb.vn/products/ak-embedded-base-kit-lap-trinh-nhung-vi-dieu-khien-mcu)
+## Technical Stack
+- **Microcontroller:** STM32L151 (ARM Cortex-M3).
+- **Framework:** AK Base Kit (Active Object / Task-based Architecture).
+- **Language:** C/C++.
+- **Peripheral Support:** OLED Display, Button Inputs, Internal Flash (for scores).
 
-[<img src="hardware/images/board-view-bottom.png" width="480"/>](https://epcb.vn/products/ak-embedded-base-kit-lap-trinh-nhung-vi-dieu-khien-mcu)
+## Acknowledgments
+- **FPT Telecom:** For organizing the Embedded Bootcamp.
+- **AK Foundation:** For the AK Base Kit framework.
 
-### Reference
-| Topic | Link |
-| ------ | ------ |
-| Blog & Tutorial | https://epcb.vn/blogs/ak-embedded-software |
-| Where to buy KIT? | https://epcb.vn/products/ak-embedded-base-kit-lap-trinh-nhung-vi-dieu-khien-mcu |
+---
+*Developed by Hồ Chí Công.*
