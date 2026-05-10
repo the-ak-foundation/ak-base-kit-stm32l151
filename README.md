@@ -12,21 +12,29 @@ The game, inspired by the **Three Kingdoms** era, challenges players to command 
 - **Dynamic AI:** Opponents with distinct personalities (Aggressive, Turtle, Opportunistic).
 - **Hero System:** Powerful generals with unique skills (e.g., "Fire Attack") that can turn the tide of battle.
 
+## How to play
+Right now the game have PC simulator that simulate the game on PC.
+You can open it by running `.\ThreeKingdomsSim.exe` in `pc_simulator` folder.
+Use Arrow keys to move cursor, Enter to select, ESC to back.
+Let's see if you can beat the aggressive Cao Cao!
+
 ## Development Roadmap
 The project follows a 3-week development cycle:
 
-### Week 1: Core Foundation
+### Week 1: Core Foundation (Done)
 - Basic graph rendering (5-8 nodes).
 - Troop spawning and movement logic.
 - Local Player vs. Player (PvP) mechanics.
 - **Milestone:** A playable core where nodes can be captured.
 
-### Week 2: Tactical Depth
+![alt text](images/firstGameplay.PNG)
+
+### Week 2: Tactical Depth (In Progress)
 - **Supply Lines:** Isolating nodes leads to "starvation" (troop loss).
 - **AI Integration:** Rival generals with specific behavioral patterns.
 - **Fog of War:** Strategic visibility limited to controlled nodes and paths.
 
-### Week 3: Replayability & Polish
+### Week 3: Replayability & Polish (Not Started Yet)
 - **Procedural Maps:** Randomly generated node layouts for every match.
 - **Hero System:** Integration of special skills and troop division (25/50/75/100%).
 - **Random Events:** Environmental and political events saved to Flash memory.
