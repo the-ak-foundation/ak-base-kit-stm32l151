@@ -1,0 +1,1 @@
+ H:/msys64/ucrt64/lib/libSDL2main.a H:/msys64/ucrt64/lib/libSDL2.dll.a -lshell32 -Wl,--undefined=WinMain -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 

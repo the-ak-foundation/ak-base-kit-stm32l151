@@ -1,0 +1,1 @@
+-I"H:/Projects/ThreeKingdomsEmbedded/ThreeKingdoms-ChiCong/pc_simulator" -I"H:/Projects/ThreeKingdomsEmbedded/ThreeKingdoms-ChiCong/pc_simulator/../application/sources/app/game_rts" -isystem H:/msys64/ucrt64/include/SDL2
