@@ -56,10 +56,14 @@ void scr_map_render(GameState_t* gs) {
     int scale = 4;
 
     // Vẽ các đường kết nối (Adj)
-    SDL_SetRenderDrawColor(g_renderer, 100, 100, 100, 255); // Màu xám
     for (uint8_t i = 0; i < MAX_NODES; i++) {
         for (uint8_t j = i + 1; j < MAX_NODES; j++) {
             if (gs->adj[i] & (1 << j)) {
+                if (gs->cost[i][j] > 4) {
+                    SDL_SetRenderDrawColor(g_renderer, 139, 69, 19, 255); // Màu nâu (SaddleBrown) cho đường núi
+                } else {
+                    SDL_SetRenderDrawColor(g_renderer, 100, 100, 100, 255); // Màu xám cho đường bằng
+                }
                 SDL_RenderDrawLine(g_renderer, 
                     gs->nodes[i].x * scale, gs->nodes[i].y * scale,
                     gs->nodes[j].x * scale, gs->nodes[j].y * scale);
@@ -102,7 +106,16 @@ void scr_map_render(GameState_t* gs) {
         // Vẽ số lượng quân của Node (trắng)
         SDL_SetRenderDrawColor(g_renderer, 255, 255, 255, 255);
         int offset_x = (n->troops >= 10) ? 7 : 3; // Căn giữa nhẹ
-        draw_number(g_renderer, n->x * scale - offset_x, n->y * scale - 5, n->troops);
+        draw_number(g_renderer, n->x * scale - offset_x, n->y * scale - 7, n->troops);
+
+        // Vẽ biểu thị level (các chấm vàng nhỏ) bên dưới số quân
+        SDL_SetRenderDrawColor(g_renderer, 255, 215, 0, 255); // Màu vàng gold
+        int total_w = n->level * 6 - 2; // Khoảng cách 6px mỗi chấm
+        int start_x = n->x * scale - total_w / 2;
+        for (int l = 0; l < n->level; l++) {
+            SDL_Rect star = { start_x + l * 6, n->y * scale + 5, 4, 4 };
+            SDL_RenderFillRect(g_renderer, &star);
+        }
     }
 
     // Vẽ các đội quân đang hành quân và đếm số đạo quân

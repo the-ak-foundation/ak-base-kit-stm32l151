@@ -1,0 +1,12 @@
+.vscode/
+
+# Build and CMake output
+build/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+*.exe
+*.o
+*.a
+*.pdb

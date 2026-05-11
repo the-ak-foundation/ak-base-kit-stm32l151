@@ -33,12 +33,16 @@ typedef enum {
 #define MAX_NODES 6      // Số lượng tối đa các thành trì trên bản đồ
 #define NO_NODE   0xFF   // Giá trị biểu diễn không có thành trì nào được chọn
 
+#define LEVEL_2_THRESHOLD 30
+#define LEVEL_3_THRESHOLD 60
+
 /**
  * @brief Cấu trúc dữ liệu của một Node (Thành trì)
  */
 typedef struct {
     uint8_t x, y;        // Tọa độ trên màn hình để render
     uint8_t troops;      // Số lượng quân lính hiện tại
+    uint8_t level;       // Cấp độ của thành trì (1, 2, 3...)
     uint8_t owner;       // Phe sở hữu (Owner_t)
 } Node_t;
 
@@ -60,6 +64,7 @@ typedef struct {
 typedef struct {
     Node_t  nodes[MAX_NODES];   // Danh sách các thành trì
     uint8_t adj[MAX_NODES];     // Ma trận kề (bitmask) lưu kết nối giữa các Node
+    uint8_t cost[MAX_NODES][MAX_NODES]; // Ma trận trọng số của các cạnh (cost di chuyển)
     March_t marches[MAX_MARCHES]; // Mảng thông tin các đạo quân đang hành quân
     uint8_t cursor;             // Vị trí con trỏ hiện tại đang trỏ vào Node nào
     uint8_t selected_src;       // Node đang được chọn để xuất quân

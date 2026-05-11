@@ -15,12 +15,19 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../application/sources/app/game_rts
 )
 
-# Source files
+# Export compile commands for VSCode intellisense
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Source and header files
 set(SOURCES
     main.cpp
     scr_map_mock.cpp
+    ak_mock.h
+    screens/scr_map.h
     ../application/sources/app/game_rts/game_logic.cpp
+    ../application/sources/app/game_rts/game_logic.h
     ../application/sources/app/game_rts/task_game.cpp
+    ../application/sources/app/game_rts/task_game.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

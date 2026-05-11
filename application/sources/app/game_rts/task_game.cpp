@@ -41,7 +41,9 @@ static void handle_global_tick() {
     // Cập nhật tất cả các đạo quân đang đi
     for (int i = 0; i < MAX_MARCHES; i++) {
         if (gs.marches[i].troops > 0) {
-            gs.marches[i].progress += 25; // Tăng tốc độ hành quân
+            uint8_t cost = gs.cost[gs.marches[i].src][gs.marches[i].dst];
+            uint8_t speed = 100 / (cost > 0 ? cost : 4); // Mặc định 25 nếu cost=4
+            gs.marches[i].progress += speed; // Tăng tốc độ hành quân theo địa hình
             if (gs.marches[i].progress >= 100) {
                 resolve_combat(&gs, i);   
                 // Xóa đạo quân sau khi giao tranh xong

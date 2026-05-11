@@ -1,0 +1,26 @@
+[
+{
+  "directory": "H:/Projects/ThreeKingdomsEmbedded/ThreeKingdoms-ChiCong/pc_simulator",
+  "command": "H:\\msys64\\ucrt64\\bin\\c++.exe -DPC_SIMULATOR @CMakeFiles/ThreeKingdomsSim.dir/includes_CXX.rsp -std=gnu++17 -o CMakeFiles\\ThreeKingdomsSim.dir\\main.cpp.obj -c H:\\Projects\\ThreeKingdomsEmbedded\\ThreeKingdoms-ChiCong\\pc_simulator\\main.cpp",
+  "file": "H:/Projects/ThreeKingdomsEmbedded/ThreeKingdoms-ChiCong/pc_simulator/main.cpp",
+  "output": "CMakeFiles/ThreeKingdomsSim.dir/main.cpp.obj"
+},
+{
+  "directory": "H:/Projects/ThreeKingdomsEmbedded/ThreeKingdoms-ChiCong/pc_simulator",
+  "command": "H:\\msys64\\ucrt64\\bin\\c++.exe -DPC_SIMULATOR @CMakeFiles/ThreeKingdomsSim.dir/includes_CXX.rsp -std=gnu++17 -o CMakeFiles\\ThreeKingdomsSim.dir\\scr_map_mock.cpp.obj -c H:\\Projects\\ThreeKingdomsEmbedded\\ThreeKingdoms-ChiCong\\pc_simulator\\scr_map_mock.cpp",
+  "file": "H:/Projects/ThreeKingdomsEmbedded/ThreeKingdoms-ChiCong/pc_simulator/scr_map_mock.cpp",
+  "output": "CMakeFiles/ThreeKingdomsSim.dir/scr_map_mock.cpp.obj"
+},
+{
+  "directory": "H:/Projects/ThreeKingdomsEmbedded/ThreeKingdoms-ChiCong/pc_simulator",
+  "command": "H:\\msys64\\ucrt64\\bin\\c++.exe -DPC_SIMULATOR @CMakeFiles/ThreeKingdomsSim.dir/includes_CXX.rsp -std=gnu++17 -o CMakeFiles\\ThreeKingdomsSim.dir\\H_\\Projects\\ThreeKingdomsEmbedded\\ThreeKingdoms-ChiCong\\application\\sources\\app\\game_rts\\game_logic.cpp.obj -c H:\\Projects\\ThreeKingdomsEmbedded\\ThreeKingdoms-ChiCong\\application\\sources\\app\\game_rts\\game_logic.cpp",
+  "file": "H:/Projects/ThreeKingdomsEmbedded/ThreeKingdoms-ChiCong/application/sources/app/game_rts/game_logic.cpp",
+  "output": "CMakeFiles/ThreeKingdomsSim.dir/H_/Projects/ThreeKingdomsEmbedded/ThreeKingdoms-ChiCong/application/sources/app/game_rts/game_logic.cpp.obj"
+},
+{
+  "directory": "H:/Projects/ThreeKingdomsEmbedded/ThreeKingdoms-ChiCong/pc_simulator",
+  "command": "H:\\msys64\\ucrt64\\bin\\c++.exe -DPC_SIMULATOR @CMakeFiles/ThreeKingdomsSim.dir/includes_CXX.rsp -std=gnu++17 -o CMakeFiles\\ThreeKingdomsSim.dir\\H_\\Projects\\ThreeKingdomsEmbedded\\ThreeKingdoms-ChiCong\\application\\sources\\app\\game_rts\\task_game.cpp.obj -c H:\\Projects\\ThreeKingdomsEmbedded\\ThreeKingdoms-ChiCong\\application\\sources\\app\\game_rts\\task_game.cpp",
+  "file": "H:/Projects/ThreeKingdomsEmbedded/ThreeKingdoms-ChiCong/application/sources/app/game_rts/task_game.cpp",
+  "output": "CMakeFiles/ThreeKingdomsSim.dir/H_/Projects/ThreeKingdomsEmbedded/ThreeKingdoms-ChiCong/application/sources/app/game_rts/task_game.cpp.obj"
+}
+]

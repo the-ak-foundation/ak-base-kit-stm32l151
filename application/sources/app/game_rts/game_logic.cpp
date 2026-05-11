@@ -10,13 +10,13 @@
  * @param gs Con trỏ tới GameState
  */
 void game_logic_init(GameState_t* gs) {
-    // Khởi tạo 6 nút mặc định cho bản đồ với tọa độ, số quân và chủ sở hữu
-    gs->nodes[0] = {10, 10, 20, OWNER_PLAYER};  // Lưu Bị - HQ (Trụ sở chính)
-    gs->nodes[1] = {50, 10,  5, OWNER_NEUTRAL}; // Các thành trì trung lập
-    gs->nodes[2] = {90, 10,  5, OWNER_NEUTRAL};
-    gs->nodes[3] = {10, 45,  5, OWNER_NEUTRAL};
-    gs->nodes[4] = {50, 45,  5, OWNER_NEUTRAL};
-    gs->nodes[5] = {90, 45, 20, OWNER_AI};      // Tào Tháo - HQ (Trụ sở chính AI)
+    // Khởi tạo 6 nút mặc định cho bản đồ với tọa độ, số quân, cấp độ và chủ sở hữu
+    gs->nodes[0] = {10, 10, 20, 1, OWNER_PLAYER};  // Lưu Bị - HQ (Trụ sở chính)
+    gs->nodes[1] = {50, 10,  5, 1, OWNER_NEUTRAL}; // Các thành trì trung lập
+    gs->nodes[2] = {90, 10,  5, 1, OWNER_NEUTRAL};
+    gs->nodes[3] = {10, 45,  5, 1, OWNER_NEUTRAL};
+    gs->nodes[4] = {50, 45,  5, 1, OWNER_NEUTRAL};
+    gs->nodes[5] = {90, 45, 20, 1, OWNER_AI};      // Tào Tháo - HQ (Trụ sở chính AI)
 
     // Kết nối các cạnh (đường đi giữa các thành trì) dùng bitmask
     // Ví dụ: Nút 0 kết nối với Nút 1 và Nút 3
@@ -26,6 +26,16 @@ void game_logic_init(GameState_t* gs) {
     gs->adj[3] = (1<<0)|(1<<4);
     gs->adj[4] = (1<<1)|(1<<3)|(1<<5);
     gs->adj[5] = (1<<2)|(1<<4);
+
+    // Khởi tạo ma trận cost mặc định (4 = đường bằng, 10 = đường núi)
+    for (uint8_t i = 0; i < MAX_NODES; i++) {
+        for (uint8_t j = 0; j < MAX_NODES; j++) {
+            gs->cost[i][j] = 4;
+        }
+    }
+    // Gán đường núi đi chậm
+    gs->cost[1][4] = 10; gs->cost[4][1] = 10;
+    gs->cost[2][5] = 10; gs->cost[5][2] = 10;
 
     // Khởi tạo các mảng hành quân trống
     for (uint8_t i = 0; i < MAX_MARCHES; i++) {
@@ -46,10 +56,20 @@ void game_logic_init(GameState_t* gs) {
  */
 void spawn_troops(GameState_t* gs) {
     for (uint8_t i = 0; i < MAX_NODES; i++) {
+        // Cập nhật cấp độ dựa trên số quân hiện tại (có thể tụt cấp nếu rút quân)
+        if (gs->nodes[i].troops >= LEVEL_3_THRESHOLD) {
+            gs->nodes[i].level = 3;
+        } else if (gs->nodes[i].troops >= LEVEL_2_THRESHOLD) {
+            gs->nodes[i].level = 2;
+        } else {
+            gs->nodes[i].level = 1;
+        }
+
         // Chỉ tăng quân cho người chơi và AI, tối đa 99 quân
         if (gs->nodes[i].owner != OWNER_NEUTRAL
             && gs->nodes[i].troops < 99) {
-            gs->nodes[i].troops++;
+            gs->nodes[i].troops += gs->nodes[i].level;
+            if (gs->nodes[i].troops > 99) gs->nodes[i].troops = 99;
         }
     }
 }
