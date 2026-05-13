@@ -1,0 +1,6 @@
+sources/networks/net/link/link_mac.cpp:328:6:void link_mac_frame_send_req()	8	static
+sources/networks/net/link/link_mac.cpp:337:6:void link_mac_frame_send_end()	16	static
+sources/networks/net/link/link_mac.cpp:303:9:uint8_t link_mac_frame_cals_checksum(link_mac_frame_t*)	8	static
+sources/networks/net/link/link_mac.cpp:134:6:void fsm_link_mac_state_handle(ak_msg_t*)	80	static
+sources/networks/net/link/link_mac.cpp:92:6:void task_link_mac(ak_msg_t*)	0	static
+sources/networks/net/link/link_mac.cpp:96:6:void fsm_link_mac_state_init(ak_msg_t*)	8	static

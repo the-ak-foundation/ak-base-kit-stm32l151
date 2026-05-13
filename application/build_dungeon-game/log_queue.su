@@ -1,0 +1,4 @@
+sources/common/container/log_queue.c:11:9:log_queue_init	16	static
+sources/common/container/log_queue.c:39:10:log_queue_len	0	static
+sources/common/container/log_queue.c:43:9:log_queue_put	16	static
+sources/common/container/log_queue.c:82:9:log_queue_get	8	static

@@ -1,0 +1,2 @@
+sources/platform/stm32l/arduino/cores/stm32/dtostrf.c:27:7:strdup	16	static
+sources/platform/stm32l/arduino/cores/stm32/dtostrf.c:35:7:dtostrf	168	static

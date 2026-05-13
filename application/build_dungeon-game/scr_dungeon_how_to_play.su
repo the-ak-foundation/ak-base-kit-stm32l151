@@ -1,0 +1,2 @@
+sources/app/screens/scr_dungeon_how_to_play.cpp:27:6:void view_scr_dungeon_how_to_play()	16	static
+sources/app/screens/scr_dungeon_how_to_play.cpp:55:6:void scr_dungeon_how_to_play_handle(ak_msg_t*)	8	static

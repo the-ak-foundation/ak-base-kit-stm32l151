@@ -1,4 +1,0 @@
-arch/       - Include files for Stellaris architecture.
-netif/      - Include files for Stellaris network interfaces.
-
-See also the FILES file in each subdirectory.

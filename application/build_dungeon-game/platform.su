@@ -1,0 +1,5 @@
+sources/platform/stm32l/platform.c:19:6:enable_interrupts	0	static
+sources/platform/stm32l/platform.c:24:6:disable_interrupts	0	static
+sources/platform/stm32l/platform.c:29:6:entry_critical	0	static
+sources/platform/stm32l/platform.c:36:6:exit_critical	8	static
+sources/platform/stm32l/platform.c:47:5:get_nest_entry_critical_counter	0	static

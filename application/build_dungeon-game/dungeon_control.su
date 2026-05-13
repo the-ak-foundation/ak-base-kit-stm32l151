@@ -1,0 +1,1 @@
+sources/app/game/dungeon_game/dungeon_control.cpp:57:6:void dungeon_control_handle(ak_msg_t*)	8	static

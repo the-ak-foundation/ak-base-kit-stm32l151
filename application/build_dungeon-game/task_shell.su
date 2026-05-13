@@ -1,0 +1,2 @@
+sources/app/task_shell.cpp:35:6:void sys_irq_shell()	16	static
+sources/app/task_shell.cpp:45:6:void task_shell(ak_msg_t*)	16	static

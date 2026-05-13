@@ -1,0 +1,3 @@
+sources/ak/src/tsm.c:45:6:tsm_tran	0	static
+sources/ak/src/tsm.c:12:6:tsm_init	16	static
+sources/ak/src/tsm.c:24:6:tsm_dispatch	16	static

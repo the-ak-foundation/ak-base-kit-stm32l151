@@ -1,0 +1,15 @@
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:298:6:virtual void Adafruit_ssd1306syp::updateRow(int, int)	16	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:180:6:virtual void Adafruit_ssd1306syp::drawPixel(int16_t, int16_t, uint16_t)	24	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:10:1:Adafruit_ssd1306syp::Adafruit_ssd1306syp()	8	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:17:1:Adafruit_ssd1306syp::~Adafruit_ssd1306syp()	0	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:97:6:void Adafruit_ssd1306syp::clear(bool)	16	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:129:6:void Adafruit_ssd1306syp::writeByte(unsigned char)	16	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:165:6:void Adafruit_ssd1306syp::startIIC()	8	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:172:6:void Adafruit_ssd1306syp::stopIIC()	8	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:121:6:void Adafruit_ssd1306syp::writeCommand(unsigned char)	16	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:22:6:virtual bool Adafruit_ssd1306syp::initialize()	8	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:103:6:void Adafruit_ssd1306syp::display_on()	0	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:112:6:void Adafruit_ssd1306syp::display_off()	0	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:208:6:void Adafruit_ssd1306syp::startDataSequence()	8	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:215:6:virtual void Adafruit_ssd1306syp::update()	24	static
+sources/driver/Adafruit_ssd1306syp/Adafruit_ssd1306syp.cpp:271:6:virtual void Adafruit_ssd1306syp::updateRow(int)	16	static

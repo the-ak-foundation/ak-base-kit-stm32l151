@@ -1,0 +1,5 @@
+sources/common/screen_manager.cpp:22:6:void scr_mng_ctor(scr_mng_t*, screen_f, view_screen_t*)	8	static
+sources/common/screen_manager.cpp:31:6:void scr_mng_dispatch(ak_msg_t*)	8	static
+sources/common/screen_manager.cpp:46:6:void scr_mng_tran(screen_f, view_screen_t*)	8	static
+sources/common/screen_manager.cpp:61:6:void scr_mng_contain_screen_none_update_mark()	0	static
+sources/common/screen_manager.cpp:65:10:void (* scr_mng_get_current_screen())(ak_msg_t*)	0	static

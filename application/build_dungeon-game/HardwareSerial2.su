@@ -1,0 +1,3 @@
+sources/platform/stm32l/arduino/cores/HardwareSerial2.cpp:61:6:void serial2_trigger_putc()	0	static
+sources/platform/stm32l/arduino/cores/HardwareSerial2.cpp:39:6:void sys_irq_uart2()	16	static
+sources/platform/stm32l/arduino/cores/HardwareSerial2.cpp:63:1:cpp)	0	static

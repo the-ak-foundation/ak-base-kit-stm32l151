@@ -1,0 +1,6 @@
+sources/app/game/dungeon_game/dungeon_lane.cpp:13:9:uint8_t dungeon_get_current_frame()	0	static
+sources/app/game/dungeon_game/dungeon_lane.cpp:17:9:uint8_t dungeon_get_total_frames()	0	static
+sources/app/game/dungeon_game/dungeon_lane.cpp:21:9:uint8_t dungeon_get_throws_left()	0	static
+sources/app/game/dungeon_game/dungeon_lane.cpp:25:6:bool dungeon_can_roll_ball()	0	static
+sources/app/game/dungeon_game/dungeon_lane.cpp:29:6:void dungeon_begin_throw()	0	static
+sources/app/game/dungeon_game/dungeon_lane.cpp:51:6:void dungeon_lane_handle(ak_msg_t*)	8	static

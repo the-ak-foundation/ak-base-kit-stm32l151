@@ -1,0 +1,15 @@
+sources/platform/stm32l/arduino/cores/Stream.cpp:31:5:int Stream::timedRead()	8	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:43:5:int Stream::timedPeek()	8	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:56:5:int Stream::peekNextDigit(LookaheadMode, bool)	16	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:87:6:void Stream::setTimeout(long unsigned int)	0	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:130:6:long int Stream::parseInt(LookaheadMode, char)	24	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:159:7:float Stream::parseFloat(LookaheadMode, char)	32	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:202:8:size_t Stream::readBytes(char*, size_t)	24	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:219:8:size_t Stream::readBytesUntil(char, char*, size_t)	24	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:232:8:String Stream::readString()	16	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:244:8:String Stream::readStringUntil(char)	16	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:256:5:int Stream::findMulti(MultiTarget*, int)	40	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:114:6:bool Stream::findUntil(char*, size_t, char*, size_t)	48	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:106:7:bool Stream::findUntil(char*, char*)	32	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:100:6:bool Stream::find(char*, size_t)	24	static
+sources/platform/stm32l/arduino/cores/Stream.cpp:93:7:bool Stream::find(char*)	32	static

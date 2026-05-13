@@ -1,0 +1,2 @@
+sources/platform/stm32l/arduino/cores/wiring_shift.cpp:27:9:uint8_t shiftIn(uint8_t, uint8_t, uint8_t)	24	static
+sources/platform/stm32l/arduino/cores/wiring_shift.cpp:42:6:void shiftOut(uint8_t, uint8_t, uint8_t, uint8_t)	24	static

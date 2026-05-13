@@ -1,0 +1,7 @@
+sources/app/screens/scr_idle.cpp:103:6:void view_scr_idle()	32	static
+sources/app/screens/scr_idle.cpp:24:2:ball::ball()	8	static
+/usr/include/newlib/c++/13.2.1/bits/vector.tcc:445:7:) [with _Args = {const ball&}; _Tp = ball; _Alloc = std::allocator<ball>]	48	static
+/usr/include/newlib/c++/13.2.1/bits/stl_vector.h:1278:7:void std::vector<_Tp, _Alloc>::push_back(const value_type&) [with _Tp = ball; _Alloc = std::allocator<ball>]	24	static
+sources/app/screens/scr_idle.cpp:112:6:void scr_idle_handle(ak_msg_t*)	64	static
+sources/app/screens/scr_idle.cpp:181:1:cpp)	0	static
+sources/app/screens/scr_idle.cpp:181:1:cpp)	0	static

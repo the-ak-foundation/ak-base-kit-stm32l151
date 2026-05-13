@@ -1,6 +1,9 @@
+/**
+ ******************************************************************************
+ * @author: An Nguyen Khanh
+ * @date:   Start: 27/04/2026
+ *          End:   27/04/2026
+ ******************************************************************************
+**/
 #include "app_data.h"
 
-/* global modbus object */
-#if defined (TASK_MBMASTER_EN)
-xMBHandle xMBMMaster;
-#endif

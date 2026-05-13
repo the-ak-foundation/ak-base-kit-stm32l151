@@ -1,0 +1,10 @@
+sources/driver/flash/flash.c:72:9:flash_wait_to_idle	8	static
+sources/driver/flash/flash.c:59:6:flash_set_write_enable.constprop	8	static
+sources/driver/flash/flash.c:104:9:flash_is_connected	8	static
+sources/driver/flash/flash.c:119:9:flash_read	24	static
+sources/driver/flash/flash.c:147:9:flash_write	16	static
+sources/driver/flash/flash.c:193:9:flash_erase_sector	8	static
+sources/driver/flash/flash.c:222:9:flash_erase_block_32k	8	static
+sources/driver/flash/flash.c:251:9:flash_erase_block_64k	16	static
+sources/driver/flash/flash.c:280:10:flash_erase_full	8	static
+sources/driver/flash/flash.c:301:9:flash_erase_synchronous	0	static

@@ -1,0 +1,2 @@
+sources/app/screens/scr_leaderboard.cpp:29:13:void view_scr_leaderboard()	24	static
+sources/app/screens/scr_leaderboard.cpp:56:6:void scr_leaderboard_handle(ak_msg_t*)	8	static

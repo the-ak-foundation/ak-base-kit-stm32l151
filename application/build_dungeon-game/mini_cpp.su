@@ -1,0 +1,13 @@
+sources/platform/stm32l/mini_cpp.cpp:13:6:void __gnu_cxx::__verbose_terminate_handler()	0	static
+sources/platform/stm32l/mini_cpp.cpp:24:17:void __cxa_pure_virtual()	8	static
+sources/platform/stm32l/mini_cpp.cpp:28:17:void __cxa_deleted_virtual()	8	static
+sources/platform/stm32l/mini_cpp.cpp:38:17:void __wrap___aeabi_unwind_cpp_pr0()	0	static
+sources/platform/stm32l/mini_cpp.cpp:39:17:void __wrap___aeabi_unwind_cpp_pr1()	0	static
+sources/platform/stm32l/mini_cpp.cpp:40:17:void __wrap___aeabi_unwind_cpp_pr2()	0	static
+sources/platform/stm32l/mini_cpp.cpp:45:7:void* operator new(size_t)	0	static
+sources/platform/stm32l/mini_cpp.cpp:49:7:void* operator new [](size_t)	0	static
+sources/platform/stm32l/mini_cpp.cpp:53:6:void operator delete(void*)	0	static
+sources/platform/stm32l/mini_cpp.cpp:57:6:void operator delete [](void*)	0	static
+sources/platform/stm32l/mini_cpp.cpp:69:9:char* _sbrk(uint32_t)	0	static
+sources/platform/stm32l/mini_cpp.cpp:85:5:int fputc(int, FILE*)	8	static
+sources/platform/stm32l/mini_cpp.cpp:91:5:int ferror(FILE*)	0	static

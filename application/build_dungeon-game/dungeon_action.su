@@ -1,0 +1,4 @@
+sources/app/game/dungeon_game/dungeon_action.cpp:24:13:void dungeon_action_setup()	0	static
+sources/app/game/dungeon_game/dungeon_action.cpp:14:6:bool dungeon_action_is_active()	0	static
+sources/app/game/dungeon_game/dungeon_action.cpp:18:6:bool dungeon_action_consume_finished()	0	static
+sources/app/game/dungeon_game/dungeon_action.cpp:58:6:void dungeon_action_handle(ak_msg_t*)	8	static

@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @author: GaoKong
+ * @author: An Nguyen Khanh
  * @date:   05/09/2016
  ******************************************************************************
 **/
@@ -28,10 +28,6 @@
 #include "app.h"
 
 #include "sys_cfg.h"
-
-#if defined (TASK_MBMASTER_EN)
-#include "mbport.h"
-#endif
 
 //#pragma GCC optimize ("O3")
 
@@ -73,11 +69,6 @@ void timer7_irq();
 void uart1_irq();
 void uart2_irq();
 void buzzer_irq( void );
-
-#if defined (TASK_MBMASTER_EN)
-void vMBPTimerISR( void );
-void vMBPUSART2ISR( void );
-#endif
 
 /* cortex-M processor fault exceptions */
 void nmi_handler()          __attribute__ ((weak));
@@ -152,15 +143,8 @@ void (* const isr_vector[])() = {
 		default_handler,						//	TIM10
 		default_handler,						//	TIM11
 		default_handler,						//	TIM2
-		
 		buzzer_irq,								//	TIM3
-		
-		#if defined (TASK_MBMASTER_EN)
-		vMBPTimerISR,							//	TIM4
-		#else
 		default_handler,						//	TIM4
-		#endif
-
 		default_handler,						//	I2C1 Event
 		default_handler,						//	I2C1 Error
 		default_handler,						//	I2C2 Event
@@ -168,17 +152,7 @@ void (* const isr_vector[])() = {
 		default_handler,						//	SPI1
 		default_handler,						//	SPI2
 		uart1_irq,								//	USART1
-
-		#if defined (TASK_MBMASTER_EN) && defined (TASK_ZIGBEE_EN)
 		default_handler,						//	USART2
-		#elif defined (TASK_MBMASTER_EN)
-		vMBPUSART2ISR,							//	USART2
-		#elif defined (TASK_ZIGBEE_EN)
-		uart2_irq,								//	USART2
-		#else
-		default_handler,						//	USART2
-		#endif
-
 		default_handler,						//	USART3
 		default_handler,						//	EXTI Line 15..10
 		default_handler,						//	RTC Alarm through EXTI Line
@@ -430,9 +404,6 @@ void exti_line1_irq() {
 	task_entry_interrupt();
 
 	if (EXTI_GetITStatus(EXTI_Line1) != RESET) {
-#if defined(IF_NETWORK_NRF24_EN)
-		sys_irq_nrf24l01();
-#endif
 		EXTI_ClearITPendingBit(EXTI_Line1);
 	}
 

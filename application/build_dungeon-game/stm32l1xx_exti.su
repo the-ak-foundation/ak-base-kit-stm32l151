@@ -1,0 +1,8 @@
+sources/platform/stm32l/Libraries/STM32L1xx_StdPeriph_Driver/src/stm32l1xx_exti.c:107:6:EXTI_DeInit	0	static
+sources/platform/stm32l/Libraries/STM32L1xx_StdPeriph_Driver/src/stm32l1xx_exti.c:128:6:EXTI_Init	12	static
+sources/platform/stm32l/Libraries/STM32L1xx_StdPeriph_Driver/src/stm32l1xx_exti.c:184:6:EXTI_StructInit	0	static
+sources/platform/stm32l/Libraries/STM32L1xx_StdPeriph_Driver/src/stm32l1xx_exti.c:199:6:EXTI_GenerateSWInterrupt	0	static
+sources/platform/stm32l/Libraries/STM32L1xx_StdPeriph_Driver/src/stm32l1xx_exti.c:230:12:EXTI_GetFlagStatus	0	static
+sources/platform/stm32l/Libraries/STM32L1xx_StdPeriph_Driver/src/stm32l1xx_exti.c:253:6:EXTI_ClearFlag	0	static
+sources/platform/stm32l/Libraries/STM32L1xx_StdPeriph_Driver/src/stm32l1xx_exti.c:268:10:EXTI_GetITStatus	0	static
+sources/platform/stm32l/Libraries/STM32L1xx_StdPeriph_Driver/src/stm32l1xx_exti.c:291:6:EXTI_ClearITPendingBit	0	static

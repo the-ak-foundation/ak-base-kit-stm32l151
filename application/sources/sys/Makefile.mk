@@ -5,3 +5,4 @@ VPATH += sources/sys
 
 SOURCES += sources/sys/sys_dbg.c
 SOURCES += sources/sys/sys_boot.c
+SOURCES += sources/sys/syscalls.c
