@@ -2,7 +2,7 @@
 
 ## Overview
 
-Dungeon Loop is a lightweight turn-based adventure game designed for embedded systems using:
+Dungeon Loop is a lightweight turn-based RPG adventure designed for embedded systems using:
 
 * STM32L151 MCU
 * SSD1306 OLED Display
@@ -15,30 +15,7 @@ The game focuses on:
 * save/load mechanics
 * event-driven gameplay
 * low-resource rendering
-
-The player travels through dangerous forest paths while collecting items, fighting monsters, and surviving through multiple stages.
-
----
-
-# Gameplay Flow
-
-# Dungeon Loop - Embedded Turn-Based Adventure
-
-## Overview
-
-Dungeon Loop is a lightweight turn-based adventure game designed for embedded systems using:
-
-* STM32L151 MCU
-* SSD1306 OLED Display
-* Winbond W25Q80 External Flash
-
-The game focuses on:
-
-* modular architecture
-* embedded runtime systems
-* save/load mechanics
-* event-driven gameplay
-* low-resource rendering
+* strategic turn-based combat
 
 The player travels through dangerous forest paths while collecting items, fighting monsters, and surviving through multiple stages.
 
@@ -95,7 +72,7 @@ SAVE GAME
 
 # Core Gameplay
 
-The player automatically travels through a forest path.
+The player automatically travels through a dangerous forest path.
 
 During the journey, random events may occur:
 
@@ -107,29 +84,76 @@ During the journey, random events may occur:
 
 The player must survive through all stages in a level.
 
+The game is designed around:
+
+* resource management
+* turn planning
+* item usage
+* status effect control
+* risk vs reward decisions
+
 ---
 
 # Level System
 
-| Level | Mode | Stages | Number of Monster |
-| :--- | :---: | :---: | :---: |
-| 1 | Easy | 4 | 1 Slime - 1 Goblin - 1 Wolf - 1 Godzilla |
-| 2 | Easy | 5 | 2 Slime - 1 Goblin - 1 Wolf - 1 Godzilla |
-| 3 | Medium | 6 | 1 Slime - 2 Goblin - 1 Wolf - 1 Godzilla - 1 Dragon |
-| 4 | Medium | 7 | 1 Slime - 2 Goblin - 2 Wolf - 1 Godzilla - 1 Dragon |
-| 5 | Hard | 8 | 1 Slime - 2 Goblin - 1 Wolf - 2 Godzilla - 1 Dragon - 1 Eye Watcher |
+| Level | Difficulty | Stages | Enemies |
+| :--- | :---: | :---: | :--- |
+| 1 | Easy | 4 | 1 Slime - 1 Goblin - 1 Wolf - 1 Gorilla |
+| 2 | Easy | 5 | 2 Slime - 1 Goblin - 1 Wolf - 1 Gorilla |
+| 3 | Medium | 6 | 1 Slime - 2 Goblin - 1 Wolf - 1 Gorilla - 1 Dragon |
+| 4 | Medium | 7 | 1 Slime - 2 Goblin - 2 Wolf - 1 Gorilla - 1 Dragon |
+| 5 | Hard | 8 | 1 Slime - 2 Goblin - 1 Wolf - 2 Gorilla - 1 Dragon - 1 Eye Watcher |
 
 ---
 
-# Player Stats
+# Player Base Stats
 
-| Stat          | Description           |
-| ------------- | --------------------- |
-| HP            | Player Health         |
-| ATK           | Attack Damage         |
-| DEF           | Armor / Defense       |
-| Inventory     | Item Storage          |
-| Status Effect | Poison / Burn / Curse |
+| Stat | Base Value | Description |
+| :--- | :---: | :--- |
+| HP | 100 | Player Health |
+| ATK | 10 | Base Attack Damage |
+| DEF | 5 | Damage Reduction |
+| Inventory | 6 Slots | Item Storage |
+| Status Effect | N/A | Poison / Burn / Curse |
+
+---
+
+# Combat Formula
+
+## Damage Formula
+
+```text
+Final Damage = ATK - (DEF / 2)
+```
+
+Minimum damage is always:
+
+```text
+1 Damage
+```
+
+Example:
+
+```text
+Enemy ATK = 20
+Player DEF = 10
+
+Final Damage:
+20 - (10 / 2)
+= 15 Damage
+```
+
+---
+
+# Defend Action
+
+When the player uses Defend:
+
+```text
+Incoming Damage Reduced by 50%
+```
+
+Defend only lasts for 1 turn.
 
 ---
 
@@ -147,7 +171,7 @@ Example:
 ```text
 1. Sword (+5 ATK)
 2. Shield (+5 DEF)
-3. Healing Potion (+5 HP)
+3. Healing Potion (+25 HP)
 ```
 
 The player can only choose one item.
@@ -156,15 +180,27 @@ The player can only choose one item.
 
 # Item System
 
-| Item | Description | Base Effect | Level Scaling | Level Spawn |
-| :--- | :---: |  :---: | :---: | :---: | 
-| Poison | Deals damage over time to enemies | 5 Damage | +2 Damage / Level | 1 |
-| Antidote | Cures all active poison status effects | Instant Cure | N/A | 1 |
-| Purify | Removes Curse and restores 100% Potion healing| Bypass Reduces | N/A | 5 |
-| Healing | Restores HP to the player (HP) | +5 HP | +2 HP / Level | 1 |
-| Sword | Increases player Attack power | +5 Attack | +3 Attack / Level | 1 |
-| Shield | Increases player Armor/Defense | +5 Armor | +4 Armor / Level | 1 |
-| Bomb | Shreds and reduces enemy Armor | -3 Armor | +2 Armor Reduction / Level | 1 |
+| Item | Description | Base Effect | Scaling | Spawn Level |
+| :--- | :--- | :---: | :---: | :---: |
+| Poison Bottle | Deals DOT damage to enemies | 8 Damage Over Time | +2 DOT / Level | 1 |
+| Antidote | Removes Poison effect | Instant Cure | N/A | 1 |
+| Purify | Removes Curse and Burn | Full Cleanse | N/A | 4 |
+| Healing Potion | Restores HP | +25 HP | +10 HP / Level | 1 |
+| Sword | Increases player ATK | +5 ATK | +2 ATK / Level | 1 |
+| Shield | Increases player DEF | +4 DEF | +2 DEF / Level | 1 |
+| Bomb | Reduces enemy armor | -5 DEF | +2 DEF Reduction / Level | 1 |
+
+---
+
+# Healing Scaling
+
+| Level | Potion Healing |
+| :--- | :---: |
+| 1 | 25 HP |
+| 2 | 35 HP |
+| 3 | 45 HP |
+| 4 | 55 HP |
+| 5 | 70 HP |
 
 ---
 
@@ -184,20 +220,16 @@ You are poisoned!
 Poison damage activated.
 ```
 
+Possible trap effects:
+
+* Direct damage
+* Poison
+* Burn
+* Temporary DEF reduction
+
 ---
 
 # Monster Encounter
-
-When encountering a monster:
-
-| Name | HP | DMG | Special Ability | Activation Turns | Scaling | Turn to Kill | Level Spawn |
-| :--- | :---: | :---:| :---: | :---: | :---: | :---: | :---: |
-| Slime | 30 | 5 | Healing (+5 HP) | 2, 4, 8, 12...  | +3 HP / Level | 10 (+2 turn/level) | 1 -> 5 |
-| Goblin | 50 | 10 | Poison (5 DMG) | 2, 5, 8, 11... | +2 DMG / Level | 15 (+5 turn/level) | 1 -> 5 |
-| Wolf | 70 | 30 | Dodge (100% Miss) | 3, 7, 11, 15... | N/A | 20 (+5 turn/level) | 1 -> 5 |
-| Gorilla | 90 | 40 | Armor (+5 DEF) | 2, 5, 8, 11... | +5 DEF / Level | 25 (+5 turn/level) | 1 -> 5 |
-| Dragon | 150 | 50 | Burn (10 Instant DMG + 5 Burn DMG Over Time (DOT)) | 3, 7, 11, 15... | +7 DEF / Level | 30 (+5 turn/level) | 3 -> 5 |
-| Eye Watcher | 200 | 60 | Reduces Healing Potion effectiveness by 50% (-50% Healing Potion) | 3, 6, 9, 12... | N/A | 40 (+5 turn/level) | 5 -> 5 |
 
 ```text
 A wild Goblin appeared!
@@ -207,14 +239,167 @@ The game enters battle mode.
 
 ---
 
+# Monster Balance Table
+
+| Monster | HP | DMG | Special Ability | Cooldown | Scaling | Spawn Level |
+| :--- | :---: | :---: | :--- | :---: | :--- | :---: |
+| Slime | 30 | 5 | Regenerates HP | Every 3 Turns | +5 HP / Level | 1 -> 5 |
+| Goblin | 50 | 10 | Applies Poison | Every 4 Turns | +2 DMG / Level | 1 -> 5 |
+| Wolf | 70 | 18 | Dodges next attack | Every 4 Turns | +3 HP / Level | 1 -> 5 |
+| Gorilla | 100 | 22 | Gains Armor | Every 3 Turns | +3 DEF / Level | 1 -> 5 |
+| Dragon | 150 | 30 | Burn Damage | Every 4 Turns | +5 HP / Level | 3 -> 5 |
+| Eye Watcher | 200 | 35 | Curse Healing | Every 3 Turns | +5 HP / Level | 5 |
+
+---
+
+# Monster Ability Design
+
+## Slime
+
+Ability:
+
+* Periodically regenerates HP
+
+```text
+Slime regenerates HP!
++5 HP
+```
+
+Designed as:
+
+* beginner enemy
+* sustain mechanic tutorial
+
+---
+
+## Goblin
+
+Ability:
+
+* Applies poison damage over time
+
+```text
+Goblin poisoned the player!
+```
+
+Poison Damage:
+
+```text
+5 Damage per turn
+Duration: 3 Turns
+```
+
+Designed as:
+
+* pressure enemy
+* resource drain enemy
+
+---
+
+## Wolf
+
+Ability:
+
+* Dodges the next incoming attack
+
+```text
+Wolf dodged the attack!
+MISS
+```
+
+Cooldown:
+
+```text
+Every 4 Turns
+```
+
+Designed as:
+
+* agility enemy
+* anti-burst enemy
+
+---
+
+## Gorilla
+
+Ability:
+
+* Gains temporary armor
+
+```text
+Gorilla hardened its armor!
++5 DEF
+```
+
+Designed as:
+
+* tank enemy
+* anti-physical enemy
+
+---
+
+## Dragon
+
+Ability:
+
+* Applies burn damage
+
+```text
+Dragon breathes fire!
+Burn activated.
+```
+
+Burn Effect:
+
+```text
+10 Total Damage
+Duration: 3 Turns
+```
+
+Designed as:
+
+* boss-type pressure enemy
+* sustained damage enemy
+
+---
+
+## Eye Watcher
+
+Ability:
+
+* Reduces healing effectiveness
+
+```text
+Eye Watcher cursed the player!
+Healing reduced by 30%.
+```
+
+Designed as:
+
+* anti-heal enemy
+* late-game control enemy
+
+---
+
+# Status Effects
+
+| Effect | Description |
+| :--- | :--- |
+| Poison | Damage every turn |
+| Burn | Small DOT damage |
+| Curse | Reduces healing effectiveness |
+| Armor Break | Reduces DEF |
+
+---
+
 # Battle System
 
 ## Battle Screen
 
 ```text
 PLAYER
-HP: 35
-ATK: 12
+HP: 100
+ATK: 10
 DEF: 5
 
 VS
@@ -230,13 +415,13 @@ DMG: 10
 
 The player has 5 main actions:
 
-| Action | Description            |
-| ------ | ---------------------- |
-| Attack | Standard attack        |
-| Item   | Use item               |
+| Action | Description |
+| :--- | :--- |
+| Attack | Standard attack |
+| Item | Use item |
 | Defend | Reduce incoming damage |
-| Skill  | Use special ability    |
-| Escape | Attempt to flee        |
+| Skill | Use special ability |
+| Escape | Attempt to flee |
 
 ---
 
@@ -254,93 +439,22 @@ Next Turn
 
 ---
 
-# Monster System
+# Difficulty Philosophy
 
-## Slime
+The game balance is designed around:
 
-Ability:
+* steady progression
+* low RNG frustration
+* strategic item usage
+* manageable damage scaling
+* short but meaningful battles
 
-* Regenerates HP periodically
+The game avoids:
 
-```text
-Slime regenerates HP!
-+5 HP
-```
-
----
-
-## Goblin
-
-Ability:
-
-* Applies poison
-
-```text
-Goblin poisoned the player!
-```
-
----
-
-## Wolf
-
-Ability:
-
-* Dodge attack
-
-```text
-Wolf dodged the attack!
-MISS
-```
-
----
-
-## Godzilla
-
-Ability:
-
-* Increase armor
-
-```text
-Godzilla hardened its armor!
-+5 DEF
-```
-
----
-
-## Dragon
-
-Ability:
-
-* Burn damage
-
-```text
-Dragon breathes fire!
-Burn activated.
-```
-
----
-
-## Eye Watcher
-
-Ability:
-
-* Reduce healing effectiveness
-
-```text
-Eye Watcher cursed the player!
-Healing reduced by 50%.
-```
-
----
-
-# Status Effects
-
-| Effect      | Description          |
-| ----------- | -------------------- |
-| Poison      | Damage every turn    |
-| Burn        | Instant + DOT damage |
-| Curse       | Reduce healing       |
-| Armor Break | Reduce DEF           |
+* instant one-shot damage
+* unfair dodge spam
+* infinite healing loops
+* defense becoming invincible
 
 ---
 
