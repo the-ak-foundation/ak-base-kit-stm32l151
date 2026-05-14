@@ -1,0 +1,10 @@
+sources/platform/stm32l/arduino/cores/IPAddress.cpp:103:8:virtual size_t IPAddress::printTo(Print&) const	32	static
+sources/platform/stm32l/arduino/cores/IPAddress.cpp:23:1:IPAddress::IPAddress()	0	static
+sources/platform/stm32l/arduino/cores/IPAddress.cpp:28:1:IPAddress::IPAddress(uint8_t, uint8_t, uint8_t, uint8_t)	12	static
+sources/platform/stm32l/arduino/cores/IPAddress.cpp:36:1:IPAddress::IPAddress(uint32_t)	0	static
+sources/platform/stm32l/arduino/cores/IPAddress.cpp:41:1:IPAddress::IPAddress(const uint8_t*)	0	static
+sources/platform/stm32l/arduino/cores/IPAddress.cpp:46:6:bool IPAddress::fromString(const char*)	16	static
+sources/platform/stm32l/arduino/cores/IPAddress.cpp:86:12:IPAddress& IPAddress::operator=(const uint8_t*)	0	static
+sources/platform/stm32l/arduino/cores/IPAddress.cpp:92:12:IPAddress& IPAddress::operator=(uint32_t)	0	static
+sources/platform/stm32l/arduino/cores/IPAddress.cpp:98:6:bool IPAddress::operator==(const uint8_t*) const	8	static
+sources/platform/stm32l/arduino/cores/IPAddress.cpp:113:1:cpp)	0	static

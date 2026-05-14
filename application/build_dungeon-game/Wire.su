@@ -1,0 +1,26 @@
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:234:5:virtual int TwoWire::available()	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:242:5:virtual int TwoWire::read()	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:258:5:virtual int TwoWire::peek()	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:269:6:virtual void TwoWire::flush()	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:275:6:static void TwoWire::onReceiveService(uint8_t*, int)	16	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:300:6:static void TwoWire::onRequestService()	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:191:8:virtual size_t TwoWire::write(uint8_t)	16	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:216:8:virtual size_t TwoWire::write(const uint8_t*, size_t)	24	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:47:1:TwoWire::TwoWire()	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:53:6:void TwoWire::begin()	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:64:6:void TwoWire::begin(uint8_t)	8	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:72:6:void TwoWire::begin(int)	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:77:6:void TwoWire::end()	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:82:6:void TwoWire::setClock(uint32_t)	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:139:6:void TwoWire::beginTransmission(uint8_t)	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:150:6:void TwoWire::beginTransmission(int)	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:168:9:uint8_t TwoWire::endTransmission(uint8_t)	16	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:87:9:uint8_t TwoWire::requestFrom(uint8_t, uint8_t, uint32_t, uint8_t, uint8_t)	24	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:120:9:uint8_t TwoWire::requestFrom(uint8_t, uint8_t, uint8_t)	16	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:124:9:uint8_t TwoWire::requestFrom(uint8_t, uint8_t)	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:129:9:uint8_t TwoWire::requestFrom(int, int)	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:134:9:uint8_t TwoWire::requestFrom(int, int, int)	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:183:9:uint8_t TwoWire::endTransmission()	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:315:6:void TwoWire::onReceive(void (*)(int))	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:321:6:void TwoWire::onRequest(void (*)())	0	static
+sources/platform/stm32l/arduino/libraries/Wire/Wire.cpp:328:25:cpp)	0	static

@@ -1,0 +1,4 @@
+sources/platform/stm32l/arduino/cores/itoa.cpp:74:14:char* ltoa(long int, char*, int)	64	static
+sources/platform/stm32l/arduino/cores/itoa.cpp:69:14:char* itoa(int, char*, int)	0	static
+sources/platform/stm32l/arduino/cores/itoa.cpp:133:14:char* ultoa(long unsigned int, char*, int)	56	static
+sources/platform/stm32l/arduino/cores/itoa.cpp:125:14:char* utoa(unsigned int, char*, int)	0	static

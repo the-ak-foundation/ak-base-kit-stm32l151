@@ -1,0 +1,10 @@
+sources/sys/syscalls.c:4:6:_exit	0	static
+sources/sys/syscalls.c:8:5:_kill	8	static
+sources/sys/syscalls.c:13:5:_getpid	0	static
+sources/sys/syscalls.c:17:5:_write	0	static
+sources/sys/syscalls.c:21:5:_read	0	static
+sources/sys/syscalls.c:25:5:_close	0	static
+sources/sys/syscalls.c:29:5:_fstat	0	static
+sources/sys/syscalls.c:34:5:_isatty	0	static
+sources/sys/syscalls.c:38:5:_lseek	0	static
+sources/sys/syscalls.c:42:5:_open	0	static

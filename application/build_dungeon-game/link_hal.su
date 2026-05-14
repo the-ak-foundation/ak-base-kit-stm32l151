@@ -1,0 +1,4 @@
+sources/networks/net/link/hal/link_hal.cpp:14:9:uint8_t link_hal_write_byte(uint8_t)	0	static
+sources/networks/net/link/hal/link_hal.cpp:19:9:uint8_t link_hal_rev_byte(uint8_t)	0	static
+sources/networks/net/link/hal/link_hal.cpp:24:6:void link_hal_reg_write_byte(pf_link_hal_write_byte)	8	static
+sources/networks/net/link/hal/link_hal.cpp:33:6:void link_hal_reg_rev_byte(pf_link_hal_rev_byte)	8	static

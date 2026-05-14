@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @author: GaoKong
+ * @author: An Nguyen Khanh
  * @date:   13/08/2016
  ******************************************************************************
 **/
@@ -14,9 +14,7 @@ extern "C"
 #endif
 
 #include "ak.h"
-#if defined (IF_NETWORK_NRF24_EN)
-#include "nrf_nwk_sig.h"
-#endif
+
 
 #include "app_if.h"
 #include "app_eeprom.h"
@@ -80,21 +78,6 @@ enum {
 };
 
 /*****************************************************************************/
-/*  RF24 task define
- */
-/*****************************************************************************/
-/* private define */
-/* define timer */
-/* define signal */
-enum {
-	AC_RF24_IF_INIT_NETWORK = AK_USER_DEFINE_SIG,
-	AC_RF24_IF_PURE_MSG_OUT,
-	AC_RF24_IF_COMMON_MSG_OUT,
-	AC_RF24_IF_PURE_MSG_IN,
-	AC_RF24_IF_COMMON_MSG_IN,
-};
-
-/*****************************************************************************/
 /* IF task define
  */
 /*****************************************************************************/
@@ -127,58 +110,123 @@ enum {
 };
 
 /*****************************************************************************/
-/*  LIFE task define
+/*  SCREENS task define
  */
 /*****************************************************************************/
 /* define timer */
 #define AC_DISPLAY_INITIAL_INTERVAL									(100)
 #define AC_DISPLAY_STARTUP_INTERVAL									(2000)
+#define AC_DISPLAY_IDLE_INTERVAL									(20000)
 #define AC_DISPLAY_LOGO_INTERVAL									(10000)
 #define AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE_INTERAL				(150)
-#define AC_DISPLAY_SHOW_MERRY_CHRISTMAS_SNOW_MOVING_UPDATE_INTERAL	(150)
-#define AC_DISPLAY_SHOW_MERRY_CHRISTMAS_SLEEP_INTERVAL				(15000)
-#define AC_DISPLAY_SHOW_MODBUS_PULL_INTERVAL						(1500)
-#define AC_DISPLAY_SHOW_MODBUS_PULL_SLEEP_INTERVAL					(30000)
 
 /* define signal */
 enum {
 	AC_DISPLAY_INITIAL = AK_USER_DEFINE_SIG,
-	AC_DISPLAY_BUTON_MODE_RELEASED,
-	AC_DISPLAY_BUTON_UP_RELEASED,
-	AC_DISPLAY_BUTON_DOWN_RELEASED,
 	AC_DISPLAY_SHOW_LOGO,
 	AC_DISPLAY_SHOW_IDLE,
 	AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE,
 	AC_DISPLAY_SHOW_FW_UPDATE,
 	AC_DISPLAY_SHOW_FW_UPDATE_ERR,
-	AC_DISPLAY_SHOW_MERRY_CHRISTMAS_SNOW_MOVING_UPDATE,
-	AC_DISPLAY_SHOW_MERRY_CHRISTMAS_SLEEP,
-	AC_DISPLAY_SHOW_MODBUS_PULL_UPDATE,
-	AC_DISPLAY_SHOW_MODBUS_PULL_SLEEP
 };
 
 /*****************************************************************************/
-/*  ZIGBEE task define
+/*  BUTTON task define
  */
 /*****************************************************************************/
 /* define timer */
 /* define signal */
 enum {
-	AC_ZIGBEE_INIT = AK_USER_DEFINE_SIG,
-	AC_ZIGBEE_FORCE_START_COODINATOR,
-	AC_ZIGBEE_START_COODINATOR,
-	AC_ZIGBEE_PERMIT_JOINING_REQ,
-	AC_ZIGBEE_ZCL_CMD_HANDLER
+	AC_DISPLAY_BUTTON_MODE_PRESSED = 1,						
+	AC_DISPLAY_BUTTON_MODE_LONG_PRESSED,					
+	AC_DISPLAY_BUTTON_MODE_RELEASED,
+	AC_DISPLAY_BUTTON_UP_PRESSED,							
+	AC_DISPLAY_BUTTON_UP_LONG_PRESSED,					
+	AC_DISPLAY_BUTTON_UP_RELEASED,
+	AC_DISPLAY_BUTTON_DOWN_PRESSED,						
+	AC_DISPLAY_BUTTON_DOWN_LONG_PRESSED,					
+	AC_DISPLAY_BUTTON_DOWN_RELEASED,
 };
 
 /*****************************************************************************/
-/* DBG task define
+/*  Dungeon game 'SCREEN' task define
+ */
+/*****************************************************************************/
+/* define timer */
+#define DUNGEON_TIME_TICK_INTERVAL									(100)
+#define DUNGEON_TIME_EXIT_INTERVAL									(3000)
+/* define signal */
+enum {
+	DUNGEON_INITIAL_SETUP = AK_USER_DEFINE_SIG,
+	DUNGEON_TIME_TICK = DUNGEON_DEFINE_SIG,
+	DUNGEON_RESET,
+	DUNGEON_LAND_SUCCESS,
+	DUNGEON_EXIT_GAME,
+};
+
+/*****************************************************************************/
+/*  Dungeon game control task define
  */
 /*****************************************************************************/
 /* define timer */
 /* define signal */
 enum {
-	AC_DBG_TEST_1 = AK_USER_DEFINE_SIG,
+	DUNGEON_CONTROL_SETUP = DUNGEON_DEFINE_SIG,
+	DUNGEON_CONTROL_UPDATE,
+	DUNGEON_CONTROL_UP,
+	DUNGEON_CONTROL_DOWN,
+	DUNGEON_CONTROL_RESET,
+};
+
+/*****************************************************************************/
+/*  Dungeon game action task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	DUNGEON_ACTION_SETUP = DUNGEON_DEFINE_SIG,
+	DUNGEON_ACTION_RUN,
+	DUNGEON_ACTION_SHOOT,
+	DUNGEON_ACTION_RESET,
+};
+
+/*****************************************************************************/
+/*  Dungeon game effect task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	DUNGEON_EFFECT_SETUP = DUNGEON_DEFINE_SIG,
+	DUNGEON_EFFECT_UPDATE,
+	DUNGEON_EFFECT_RESET,
+};
+
+/*****************************************************************************/
+/*  Dungeon game lane task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	DUNGEON_LANE_SETUP = DUNGEON_DEFINE_SIG,
+	DUNGEON_LANE_LEVEL_UP,
+	DUNGEON_LANE_CHECK_GAME_OVER,
+	DUNGEON_LANE_RESET,
+};
+
+/*****************************************************************************/
+/*  Dungeon game state task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	DUNGEON_STATE_SETUP = DUNGEON_DEFINE_SIG,
+	DUNGEON_STATE_RUN,
+	DUNGEON_STATE_DETONATOR,
+	DUNGEON_STATE_RESET,
 };
 
 /*****************************************************************************/

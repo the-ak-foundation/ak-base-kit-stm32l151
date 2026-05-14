@@ -1,0 +1,4 @@
+sources/driver/gpio/gpio_output.c:10:6:gpio_output_init	8	static
+sources/driver/gpio/gpio_output.c:27:6:gpio_output_on	0	static
+sources/driver/gpio/gpio_output.c:34:6:gpio_output_off	0	static
+sources/driver/gpio/gpio_output.c:41:6:gpio_output_toggle	0	static

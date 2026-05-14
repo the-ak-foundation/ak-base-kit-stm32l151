@@ -1,0 +1,9 @@
+sources/platform/stm32l/arduino/cores/HardwareSerial.cpp:67:5:virtual int HardwareSerial::available()	0	static
+sources/platform/stm32l/arduino/cores/HardwareSerial.cpp:71:5:virtual int HardwareSerial::peek()	0	static
+sources/platform/stm32l/arduino/cores/HardwareSerial.cpp:79:5:virtual int HardwareSerial::read()	0	static
+sources/platform/stm32l/arduino/cores/HardwareSerial.cpp:103:6:virtual void HardwareSerial::flush()	0	static
+sources/platform/stm32l/arduino/cores/HardwareSerial.cpp:90:5:virtual int HardwareSerial::availableForWrite()	16	static
+sources/platform/stm32l/arduino/cores/HardwareSerial.cpp:107:8:virtual size_t HardwareSerial::write(uint8_t)	24	static
+sources/platform/stm32l/arduino/cores/HardwareSerial.cpp:36:6:void HardwareSerial::_rx_complete_irq(char)	0	static
+sources/platform/stm32l/arduino/cores/HardwareSerial.cpp:49:5:int HardwareSerial::_tx_empty_irq(char*)	0	static
+sources/platform/stm32l/arduino/cores/HardwareSerial.cpp:63:6:void HardwareSerial::begin()	0	static

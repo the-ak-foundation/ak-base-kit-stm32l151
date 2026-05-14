@@ -1,0 +1,3 @@
+sources/driver/eeprom/eeprom.cpp:6:9:uint8_t eeprom_read(uint32_t, uint8_t*, uint32_t)	0	static
+sources/driver/eeprom/eeprom.cpp:10:9:uint8_t eeprom_write(uint32_t, uint8_t*, uint32_t)	0	static
+sources/driver/eeprom/eeprom.cpp:14:9:uint8_t eeprom_erase(uint32_t, uint32_t)	0	static

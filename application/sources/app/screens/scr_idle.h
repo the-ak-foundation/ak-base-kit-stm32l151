@@ -1,3 +1,10 @@
+/**
+ ******************************************************************************
+ * @author: An Nguyen Khanh
+ * @date:   Start: 29/04/2026
+ *          End:   29/04/2026
+ ******************************************************************************
+**/
 #ifndef __SCR_IDLE_H__
 #define __SCR_IDLE_H__
 
@@ -16,12 +23,12 @@
 #include "view_render.h"
 
 #include "buzzer.h"
-
 #include <math.h>
 #include <vector>
 
-extern view_dynamic_t dyn_view_idle;
+#include "screens.h"
 
+extern view_dynamic_t dyn_view_idle;
 extern view_screen_t scr_idle;
 extern void scr_idle_handle(ak_msg_t* msg);
 

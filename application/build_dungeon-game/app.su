@@ -1,0 +1,4 @@
+sources/app/app.cpp:93:5:int main_app()	104	static
+sources/app/app.cpp:194:6:void task_polling_console()	32	static
+sources/app/app.cpp:280:6:void sys_irq_timer_10ms()	8	static
+sources/app/app.cpp:292:7:void* app_get_boot_share_data()	0	static

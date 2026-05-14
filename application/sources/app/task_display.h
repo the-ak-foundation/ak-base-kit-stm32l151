@@ -1,16 +1,19 @@
+/**
+ ******************************************************************************
+ * @author: An Nguyen Khanh
+ * @date:   Start: 28/04/2026
+ *          End:   29/04/2026
+ ******************************************************************************
+**/
 #ifndef __TASK_DISPLAY_H__
 #define __TASK_DISPLAY_H__
 
 #include "screen_manager.h"
 #include "scr_idle.h"
-#include "scr_info.h"
 #include "scr_startup.h"
-#include "scr_noen.h"
-#include "scr_es35sw_th_sensor.h"
-#include "scr_lhio404_io_device.h"
 
-#define LCD_WIDTH			(124)
-#define LCD_HEIGHT			(60)
+#define LCD_WIDTH			(128)
+#define LCD_HEIGHT			(64)
 
 #define NUMFLAKES			(10)
 #define XPOS				(0)

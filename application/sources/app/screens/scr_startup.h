@@ -1,3 +1,10 @@
+/**
+ ******************************************************************************
+ * @author: An Nguyen Khanh
+ * @date:   Start: 29/04/2026
+ *          End:   30/04/2026
+ ******************************************************************************
+**/
 #ifndef __SCR_STARTUP_H__
 #define __SCR_STARTUP_H__
 
@@ -17,8 +24,9 @@
 
 #include "buzzer.h"
 
-extern view_dynamic_t dyn_view_startup;
+#include "screens.h"
 
+extern view_dynamic_t dyn_view_startup;
 extern view_screen_t scr_startup;
 extern void scr_startup_handle(ak_msg_t* msg);
 

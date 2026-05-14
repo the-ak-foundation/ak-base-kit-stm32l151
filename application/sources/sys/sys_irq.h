@@ -1,3 +1,10 @@
+/**
+ ******************************************************************************
+ * @author: An Nguyen Khanh
+ * @date:   Start: 27/04/2026
+ *          End:   27/04/2026
+ ******************************************************************************
+**/
 #ifndef __SYS_IRQ_H__
 #define __SYS_IRQ_H__
 
@@ -10,7 +17,6 @@ extern "C"
 
 #define SYS_IRQ_EXCEPTION_NUMBER_IRQ0_NUMBER_RESPECTIVE		16	/* exception number 16 ~~ IRQ0 */
 
-extern void sys_irq_nrf24l01();
 extern void sys_irq_shell();
 extern void sys_irq_uart2();
 extern void sys_irq_timer_10ms();

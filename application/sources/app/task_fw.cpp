@@ -1,3 +1,10 @@
+/**
+ ******************************************************************************
+ * @author: An Nguyen Khanh
+ * @date:   Start: 06/05/2026
+ *          End:   06/05/2026
+ ******************************************************************************
+**/
 #include <string.h>
 
 #include "ak.h"
@@ -21,7 +28,6 @@
 
 #include "task_if.h"
 #include "task_list.h"
-#include "task_list_if.h"
 #include "task_fw.h"
 #include "task_life.h"
 

@@ -1,0 +1,6 @@
+sources/common/container/fifo.c:8:6:fifo_init	8	static
+sources/common/container/fifo.c:18:10:fifo_availble	0	static
+sources/common/container/fifo.c:22:6:fifo_is_empty	0	static
+sources/common/container/fifo.c:26:6:fifo_is_full	0	static
+sources/common/container/fifo.c:30:9:fifo_put	16	static
+sources/common/container/fifo.c:52:9:fifo_get	16	static

@@ -1,0 +1,8 @@
+sources/common/utils.c:11:10:str_len	0	static
+sources/common/utils.c:19:7:mem_set	8	static
+sources/common/utils.c:27:7:mem_cpy	8	static
+sources/common/utils.c:35:5:mem_cmp	8	static
+sources/common/utils.c:58:9:mem_read	0	static
+sources/common/utils.c:69:9:mem_write	8	static
+sources/common/utils.c:80:9:str_cmp	0	static
+sources/common/utils.c:94:10:str_cpy	16	static

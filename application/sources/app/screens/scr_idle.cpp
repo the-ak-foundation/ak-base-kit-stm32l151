@@ -1,5 +1,15 @@
+/**
+ ******************************************************************************
+ * @author: An Nguyen Khanh
+ * @date:   Start: 29/04/2026
+ *          End:   29/04/2026
+ ******************************************************************************
+**/
 #include "scr_idle.h"
 
+/*****************************************************************************/
+/* Variable and Class Declaration - idle */
+/*****************************************************************************/
 using namespace std;
 
 #define MAX_BALL_DISPLAY	(16)
@@ -67,6 +77,9 @@ public:
 	}
 };
 
+/*****************************************************************************/
+/* View - idle */
+/*****************************************************************************/
 static void view_scr_idle();
 
 view_dynamic_t dyn_view_idle = {
@@ -93,6 +106,9 @@ void view_scr_idle() {
 	}
 }
 
+/*****************************************************************************/
+/* Handle - idle */
+/*****************************************************************************/
 void scr_idle_handle(ak_msg_t* msg) {
 	switch (msg->sig) {
 	case SCREEN_ENTRY: {
@@ -104,9 +120,9 @@ void scr_idle_handle(ak_msg_t* msg) {
 		}
 
 		timer_set(AC_TASK_DISPLAY_ID, \
-				  AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE, \
-				  AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE_INTERAL, \
-				  TIMER_PERIODIC);
+				AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE, \
+				AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE_INTERAL, \
+				TIMER_PERIODIC);
 	}
 		break;
 
@@ -117,23 +133,23 @@ void scr_idle_handle(ak_msg_t* msg) {
 	}
 		break;
 
-	case AC_DISPLAY_BUTON_MODE_RELEASED: {
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_RELEASED\n");
+	case AC_DISPLAY_BUTTON_MODE_RELEASED: {
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_RELEASED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE);
-		SCREEN_TRAN(scr_es35sw_th_sensor_handle, &scr_es35sw_th_sensor);
+		SCREEN_TRAN(scr_menu_game_handle, &scr_menu_game);
 	}
 		break;
 
-	case AC_DISPLAY_BUTON_UP_RELEASED: {
-		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_RELEASED\n");
+	case AC_DISPLAY_BUTTON_UP_RELEASED: {
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_RELEASED\n");
 		ball new_ball;
 		new_ball.id = ball::total++;
 
 		if (v_idle_ball.empty()) {
 			timer_set(AC_TASK_DISPLAY_ID, \
-					  AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE, \
-					  AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE_INTERAL, \
-					  TIMER_PERIODIC);
+					AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE, \
+					AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE_INTERAL, \
+					TIMER_PERIODIC);
 		}
 
 		if (v_idle_ball.size() < MAX_BALL_DISPLAY) {
@@ -145,8 +161,8 @@ void scr_idle_handle(ak_msg_t* msg) {
 	}
 		break;
 
-	case AC_DISPLAY_BUTON_DOWN_RELEASED: {
-		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_RELEASED\n");
+	case AC_DISPLAY_BUTTON_DOWN_RELEASED: {
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_RELEASED\n");
 		if (v_idle_ball.size()) {
 			ball::total--;
 			v_idle_ball.pop_back();
@@ -154,7 +170,7 @@ void scr_idle_handle(ak_msg_t* msg) {
 
 		if (v_idle_ball.empty()) {
 			timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE);
-			SCREEN_TRAN(scr_es35sw_th_sensor_handle, &scr_es35sw_th_sensor);
+			SCREEN_TRAN(scr_menu_game_handle, &scr_menu_game);
 		}
 	}
 		break;

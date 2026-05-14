@@ -1,0 +1,4 @@
+sources/networks/net/link/link.cpp:77:6:void fsm_link_state_handle(ak_msg_t*)	496	static
+sources/networks/net/link/link.cpp:45:6:void fsm_link_state_init(ak_msg_t*)	8	static
+sources/networks/net/link/link.cpp:35:6:void task_link(ak_msg_t*)	0	static
+sources/networks/net/link/link.cpp:39:6:void link_init_state_machine()	0	static

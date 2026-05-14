@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @author: GaoKong
+ * @author: An Nguyen Khanh
  * @date:   13/08/2016
  ******************************************************************************
 **/
@@ -39,36 +39,24 @@
 #include "task_shell.h"
 #include "task_life.h"
 #include "task_if.h"
-#include "task_rf24_if.h"
 #include "task_uart_if.h"
 #include "task_display.h"
-#include "task_zigbee.h"
 
 /* sys include */
 #include "sys_boot.h"
 #include "sys_irq.h"
 #include "sys_io.h"
 #include "sys_ctrl.h"
-#include "sys_dbg.h"
 
 /* arduino include */
 #include "SPI.h"
 #include "WString.h"
 #include "HardwareSerial.h"
-#include "ArduinoJson.h"
 
 /* common include */
 #include "screen_manager.h"
 
 /* ----------------------- Platform includes --------------------------------*/
-
-/* ----------------------- Modbus includes ----------------------------------*/
-#if defined (TASK_MBMASTER_EN)
-#include "mbport.h"
-#include "mbm.h"
-#include "mbtypes.h"
-#include "common/mbportlayer.h"
-#endif
 
 #include "buzzer.h"
 
@@ -162,7 +150,7 @@ int main_app() {
 
 	/* siren init */
 	BUZZER_Init();
-	BUZZER_PlayTones(tones_startup);
+	//BUZZER_PlayTones(tones_startup);
 
 	/* get boot share data */
 	flash_read(APP_FLASH_INTTERNAL_SHARE_DATA_SECTOR_1, reinterpret_cast<uint8_t*>(&boot_app_share_data), sizeof(boot_app_share_data_t));
@@ -177,88 +165,7 @@ int main_app() {
 	flash_erase_sector(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR);
 	flash_write(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR, reinterpret_cast<uint8_t*>(&app_fatal_log), sizeof(fatal_log_t));
 
-#if defined (TASK_MBMASTER_EN)
-	/* modbus rtu init*/
-	uint8_t flag_init = eMBMSerialInitExt(&xMBMMaster, MB_RTU, MBM_SERIAL_PORT, MBM_SERIAL_BAUDRATE, MB_PAR_NONE, 1);
-	APP_PRINT ("Init mbMaster >> ");
-	switch (flag_init)
-	{
-	case MB_ENOERR:
-		APP_PRINT ("No error\n");
-		break;
-	case MB_ENOREG:
-		APP_PRINT ("Illegal register address\n");
-		break;
-	case MB_EINVAL:
-		APP_PRINT ("Illegal argument\n");
-		break;
-	case MB_EPORTERR:
-		APP_PRINT ("Porting layer error\n");
-		break;
-	case MB_ENORES:
-		APP_PRINT ("Insufficient resources\n");
-		break;
-	case MB_EIO:
-		APP_PRINT ("I/O error\n");
-		break;
-	case MB_EILLSTATE:
-		APP_PRINT ("Protocol stack in illegal state\n");
-		break;
-	case MB_EAGAIN:
-		APP_PRINT ("Retry I/O operation\n");
-		break;
-	case MB_ETIMEDOUT:
-		APP_PRINT ("Timeout error occurred\n");
-		break;
-	case MB_EX_ILLEGAL_FUNCTION:
-		APP_PRINT ("Illegal function exception\n");
-		break;
-	case MB_EX_ILLEGAL_DATA_ADDRESS:
-		APP_PRINT ("Illegal data address\n");
-		break;
-	case MB_EX_ILLEGAL_DATA_VALUE:
-		APP_PRINT ("Illegal data value\n");
-		break;
-	case MB_EX_SLAVE_DEVICE_FAILURE:
-		APP_PRINT ("Slave device failure\n");
-		break;
-	case MB_EX_ACKNOWLEDGE:
-		APP_PRINT ("Slave acknowledge\n");
-		break;
-	case MB_EX_SLAVE_BUSY:
-		APP_PRINT ("Slave device busy\n");
-		break;
-	case MB_EX_MEMORY_PARITY_ERROR:
-		APP_PRINT ("Memory parity error\n");
-		break;
-	case MB_EX_GATEWAY_PATH_UNAVAILABLE:
-		APP_PRINT ("Gateway path unavailable\n");
-		break;
-	case MB_EX_GATEWAY_TARGET_FAILED:
-		APP_PRINT ("Gateway target device failed to respond\n");
-		break;
-		
-	default:
-		break;
-	}
-#endif
-
-#if defined (TASK_ZIGBEE_EN)
-	Serial2.begin();
-	Serial2.setTimeout(100);
-#endif
-
 	EXIT_CRITICAL();
-
-#if defined (TASK_ZIGBEE_EN)
-	APP_PRINT("start_coordinator(0)\n");
-	if (zigbee_network.start_coordinator(0) == 0) {
-		APP_PRINT("OK\n");
-	}
-	else {
-		APP_PRINT("NG\n");
-	}
-#endif
 
 	/* start timer for application */
 	app_init_state_machine();
@@ -284,12 +191,6 @@ int main_app() {
  * when all ak message queue empty, task_polling_xxx() will be called.
  */
 /*****************************************************************************/
-void task_polling_zigbee() {
-#if defined(TASK_ZIGBEE_EN)
-	zigbee_network.update();
-#endif
-}
-
 void task_polling_console() {
 	volatile uint8_t c = 0;
 
@@ -347,9 +248,9 @@ void task_polling_console() {
  */
 void app_start_timer() {
 	/* start timer to toggle life led */
-	timer_set(AC_TASK_LIFE_ID, AC_LIFE_SYSTEM_CHECK, AC_LIFE_TASK_TIMER_LED_LIFE_INTERVAL, TIMER_PERIODIC);
-	timer_set(AC_TASK_FW_ID, FW_CHECKING_REQ, FW_UPDATE_REQ_INTERVAL, TIMER_ONE_SHOT);
-	timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_INITIAL, AC_DISPLAY_INITIAL_INTERVAL, TIMER_ONE_SHOT);
+	timer_set(AC_TASK_LIFE_ID, 		AC_LIFE_SYSTEM_CHECK, 	AC_LIFE_TASK_TIMER_LED_LIFE_INTERVAL, 	TIMER_PERIODIC);
+	timer_set(AC_TASK_FW_ID, 		FW_CHECKING_REQ, 		FW_UPDATE_REQ_INTERVAL, 				TIMER_ONE_SHOT);
+	timer_set(AC_TASK_DISPLAY_ID, 	AC_DISPLAY_INITIAL, 	AC_DISPLAY_INITIAL_INTERVAL, 			TIMER_ONE_SHOT);
 }
 
 /* init state machine for tasks
@@ -365,7 +266,6 @@ void app_init_state_machine() {
 void app_task_init() {
 	SCREEN_CTOR(&scr_mng_app, scr_startup_handle, &scr_startup);
 
-	task_post_pure_msg(AC_TASK_RF24_IF_ID, AC_RF24_IF_INIT_NETWORK);
 	task_post_pure_msg(AC_TASK_UART_IF_ID, AC_UART_IF_INIT);
 }
 

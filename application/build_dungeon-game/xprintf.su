@@ -1,0 +1,10 @@
+sources/common/xprintf.c:40:12:ilog10	32	static
+sources/common/xprintf.c:62:15:i10x	24	static
+sources/common/xprintf.c:169:6:xfputc	16	static
+sources/common/xprintf.c:161:6:xputc	0	static
+sources/common/xprintf.c:234:13:xvfprintf	120	static
+sources/common/xprintf.c:197:6:xfputs	16	static
+sources/common/xprintf.c:189:6:xputs	0	static
+sources/common/xprintf.c:372:6:xprintf	16	static
+sources/common/xprintf.c:386:6:xfprintf	12	static
+sources/common/xprintf.c:401:6:xsprintf	20	static

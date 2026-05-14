@@ -1,0 +1,5 @@
+sources/app/screens/scr_menu_game.cpp:130:13:void menu_rebuild_visible_list()	16	static
+sources/app/screens/scr_menu_game.cpp:225:6:void update_menu_screen_chosse()	8	static
+sources/app/screens/scr_menu_game.cpp:266:6:void screen_tran_menu()	8	static
+sources/app/screens/scr_menu_game.cpp:164:6:void view_scr_menu_game()	48	static
+sources/app/screens/scr_menu_game.cpp:297:6:void scr_menu_game_handle(ak_msg_t*)	8	static

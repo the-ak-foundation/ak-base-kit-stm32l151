@@ -1,5 +1,15 @@
+/**
+ ******************************************************************************
+ * @author: An Nguyen Khanh
+ * @date:   Start: 29/04/2026
+ *          End:   30/04/2026
+ ******************************************************************************
+**/
 #include "scr_startup.h"
 
+/*****************************************************************************/
+/* View - startup */
+/*****************************************************************************/
 static void view_scr_startup();
 
 view_dynamic_t dyn_view_startup = {
@@ -21,6 +31,7 @@ void view_scr_startup() {
 #define AK_LOGO_AXIS_X		(23)
 #define AK_LOGO_TEXT		(AK_LOGO_AXIS_X + 4)
 	/* ak logo */
+	BUZZER_PlayTones(tones_startup);
 	view_render.clear();
 	view_render.setTextSize(1);
 	view_render.setTextColor(WHITE);
@@ -34,34 +45,39 @@ void view_scr_startup() {
 	view_render.print("(__)(__)(_)\\_)");
 	view_render.setCursor(AK_LOGO_TEXT, 42);
 	view_render.print("Active Kernel");
+	view_render.update();
 }
 
+/*****************************************************************************/
+/* Handle - startup */
+/*****************************************************************************/
 void scr_startup_handle(ak_msg_t* msg) {
 	switch (msg->sig) {
 	case AC_DISPLAY_INITIAL: {
 		APP_DBG_SIG("AC_DISPLAY_INITIAL\n");
 		view_render.initialize();
 		view_render_display_on();
-		timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_LOGO, AC_DISPLAY_STARTUP_INTERVAL, TIMER_ONE_SHOT);
+		timer_set(	AC_TASK_DISPLAY_ID, \
+					AC_DISPLAY_SHOW_LOGO, \
+					AC_DISPLAY_STARTUP_INTERVAL, \
+					TIMER_ONE_SHOT);
+		// Read setting
+		eeprom_read(	EEPROM_SETTING_START_ADDR, \
+						(uint8_t*)&settingdata, \
+						sizeof(settingdata));
+		BUZZER_Sleep(settingdata.silent);
 	}
 		break;
 
-	case AC_DISPLAY_BUTON_MODE_RELEASED: {
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_RELEASED\n");
-		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE);
-		SCREEN_TRAN(scr_idle_handle, &scr_idle);
+	case AC_DISPLAY_BUTTON_MODE_RELEASED: {
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_RELEASED\n");
+		SCREEN_TRAN(scr_menu_game_handle, &scr_menu_game);
 	}
 		break;
 
 	case AC_DISPLAY_SHOW_LOGO: {
 		APP_DBG_SIG("AC_DISPLAY_SHOW_LOGO\n");
-		SCREEN_TRAN(scr_info_handle, &scr_info);
-	}
-		break;
-
-	case AC_DISPLAY_SHOW_IDLE: {
-		APP_DBG_SIG("AC_DISPLAY_SHOW_IDLE\n");
-		SCREEN_TRAN(scr_idle_handle, &scr_idle);
+		SCREEN_TRAN(scr_menu_game_handle, &scr_menu_game);
 	}
 		break;
 
