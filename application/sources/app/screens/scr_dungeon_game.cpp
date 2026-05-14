@@ -12,11 +12,12 @@
 
 #include "screens.h"
 
-uint8_t dungeon_game_state;
-dungeon_game_setting_t settingsetup;
-uint8_t dungeon_start_mode = DUNGEON_START_NEW_GAME;
-uint8_t dungeon_selected_level = 1;
-uint8_t dungeon_last_outcome = DUNGEON_OUTCOME_NONE;
+/* Global state shared with other screens/modules. */
+uint8_t dungeon_game_state;                       /* GAME_OFF / GAME_PLAY / GAME_OVER */
+dungeon_game_setting_t settingsetup;             /* User gameplay settings from EEPROM */
+uint8_t dungeon_start_mode = DUNGEON_START_NEW_GAME; /* Start policy (new/continue/level/creator) */
+uint8_t dungeon_selected_level = 1;              /* Current selected level from menu */
+uint8_t dungeon_last_outcome = DUNGEON_OUTCOME_NONE; /* Win/Lose result passed to game-over screen */
 static uint8_t dungeon_persist_enabled = 1;
 
 enum {
@@ -37,7 +38,7 @@ enum {
 	DUNGEON_ACTION_ATTACK = 0,
 	DUNGEON_ACTION_ITEM,
 	DUNGEON_ACTION_DEFEND,
-	DUNGEON_ACTION_SKILL,
+	DUNGEON_ACTION_SKILL,ư
 	DUNGEON_ACTION_ESCAPE,
 	DUNGEON_ACTION_COUNT,
 };
@@ -74,11 +75,18 @@ enum {
 
 enum {
 	DUNGEON_BATTLE_PHASE_INPUT = 0,
-	DUNGEON_BATTLE_PHASE_HERO_WAIT,
-	DUNGEON_BATTLE_PHASE_MONSTER_WAIT,
+	DUNGEON_BATTLE_PHASE_HERO_ATK_LUNGE,
+	DUNGEON_BATTLE_PHASE_HERO_ATK_HIT,
+	DUNGEON_BATTLE_PHASE_HERO_ATK_APPLY,
+	DUNGEON_BATTLE_PHASE_MONSTER_ATK_LUNGE,
+	DUNGEON_BATTLE_PHASE_MONSTER_ATK_HIT,
+	DUNGEON_BATTLE_PHASE_MONSTER_ATK_APPLY,
 };
 
 #define DUNGEON_BATTLE_WAIT_TICKS	(10)
+#define DUNGEON_BATTLE_STEP_TICKS	(5)
+#define DUNGEON_SHAKE_TICKS		(6)
+#define DUNGEON_POPUP_TICKS		(24)
 
 typedef struct {
 	const uint8_t* data;
@@ -86,30 +94,35 @@ typedef struct {
 	uint8_t height;
 } dungeon_bitmap_t;
 
+/*
+ * Runtime snapshot of one dungeon run.
+ * This struct is the main source of truth for battle, travel and UI state.
+ */
 typedef struct {
 	uint8_t level;
 	uint8_t stage;
 	uint8_t total_stages;
-	uint8_t current_view;
-	uint8_t current_monster;
-	uint8_t support_event;
-	uint8_t support_pending;
-	uint8_t battle_turn;
-	uint8_t battle_phase;
-	uint8_t battle_wait_ticks;
-	uint8_t defend_icon_active;
-	uint8_t travel_progress;
-	uint8_t selected_action;
-	uint8_t selected_support_item;
-	uint8_t defend_active;
-	uint8_t poison_turns;
-	uint8_t burn_turns;
-	uint8_t curse_turns;
-	uint8_t enemy_poison_turns;
-	uint8_t enemy_poison_damage;
-	uint8_t monster_dodge_ready;
-	uint8_t inventory[DUNGEON_ITEM_COUNT];
-	uint8_t chest_options[3];
+	uint8_t current_view;               /* Travel / Chest / Message / Battle */
+	uint8_t current_monster;            /* Monster enum for current stage */
+	uint8_t support_event;              /* Remaining chest events before battle */
+	uint8_t support_pending;            /* Gate to trigger chest/battle at travel end */
+	uint8_t battle_turn;                /* Turn counter for monster behavior patterns */
+	uint8_t battle_phase;               /* Fine-grained battle animation phase */
+	uint8_t battle_wait_ticks;          /* Delay ticks for current battle phase */
+	uint8_t pre_battle_alert;           /* Show monster in travel before entering battle */
+	uint8_t defend_icon_active;         /* Shield icon UI flag */
+	uint8_t travel_progress;            /* 0..100 travel progress across forest lane */
+	uint8_t selected_action;            /* Selected action button index in battle */
+	uint8_t selected_support_item;      /* Selected chest option index */
+	uint8_t defend_active;              /* Defend status that halves next incoming hit */
+	uint8_t poison_turns;               /* Hero poison turns remaining */
+	uint8_t burn_turns;                 /* Hero burn turns remaining */
+	uint8_t curse_turns;                /* Hero curse turns remaining */
+	uint8_t enemy_poison_turns;         /* Monster poison turns remaining */
+	uint8_t enemy_poison_damage;        /* Poison damage applied to monster each turn */
+	uint8_t monster_dodge_ready;        /* Wolf special dodge flag */
+	uint8_t inventory[DUNGEON_ITEM_COUNT]; /* Item counts */
+	uint8_t chest_options[3];           /* Rolled item IDs in current chest */
 	int16_t player_hp;
 	int16_t player_max_hp;
 	int16_t player_atk;
@@ -118,9 +131,19 @@ typedef struct {
 	int16_t monster_max_hp;
 	int16_t monster_dmg;
 	int16_t monster_armor;
-	char line_1[22];
-	char line_2[22];
-	char line_3[22];
+	int16_t pending_attack_damage;      /* Deferred ATK damage applied in APPLY phase */
+	uint8_t pending_attack_hit;         /* 0 when dodged/missed, 1 when hit should apply */
+	int16_t player_hp_popup_value;      /* Floating text value for hero damage */
+	int16_t monster_hp_popup_value;     /* Floating text value for monster damage */
+	int16_t monster_armor_popup_value;  /* Floating text value for armor loss */
+	uint8_t player_hp_popup_ticks;      /* Popup lifespan */
+	uint8_t monster_hp_popup_ticks;     /* Popup lifespan */
+	uint8_t monster_armor_popup_ticks;  /* Popup lifespan */
+	uint8_t player_shake_ticks;         /* Shake duration */
+	uint8_t monster_shake_ticks;        /* Shake duration */
+	char line_1[22];                    /* Message view line 1 */
+	char line_2[22];                    /* Message view line 2 */
+	char line_3[22];                    /* Message view line 3 */
 } dungeon_runtime_t;
 
 static dungeon_runtime_t dungeon_runtime;
@@ -174,6 +197,16 @@ static void dungeon_update_best_progress();
 static void dungeon_queue_enemy_turn();
 static void dungeon_finish_monster_turn();
 
+/*
+ * Function note index (full explanation in docs file):
+ * - Setup/load/save: dungeon_init_player, dungeon_setup_session, dungeon_save_progress, dungeon_restore_save
+ * - Navigation: dungeon_prepare_stage, dungeon_trigger_support, dungeon_advance_stage
+ * - Battle logic: dungeon_confirm_action, dungeon_tick, dungeon_enemy_action, dungeon_status_tick
+ * - Damage/FX: dungeon_register_* helpers, dungeon_enemy_take_damage_internal, dungeon_draw_battle
+ * - Rendering: dungeon_draw_travel, dungeon_draw_chest, dungeon_draw_message, dungeon_draw_battle
+ * - Screen entrypoint: scr_dungeon_game_handle
+ */
+
 view_dynamic_t dyn_view_item_dungeon_game = {
 	{
 		.item_type = ITEM_TYPE_DYNAMIC,
@@ -204,6 +237,72 @@ static int16_t dungeon_max_int16(int16_t a, int16_t b) {
 
 static int16_t dungeon_min_int16(int16_t a, int16_t b) {
 	return (a < b) ? a : b;
+}
+
+static void dungeon_register_player_damage(int16_t amount) {
+	if (amount <= 0) {
+		return;
+	}
+
+	if (dungeon_runtime.player_hp_popup_ticks > 0) {
+		dungeon_runtime.player_hp_popup_value += amount;
+	}
+	else {
+		dungeon_runtime.player_hp_popup_value = amount;
+	}
+	dungeon_runtime.player_hp_popup_ticks = DUNGEON_POPUP_TICKS;
+	if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_INPUT) {
+		dungeon_runtime.player_shake_ticks = DUNGEON_SHAKE_TICKS;
+	}
+}
+
+static void dungeon_register_monster_damage(int16_t amount) {
+	if (amount <= 0) {
+		return;
+	}
+
+	if (dungeon_runtime.monster_hp_popup_ticks > 0) {
+		dungeon_runtime.monster_hp_popup_value += amount;
+	}
+	else {
+		dungeon_runtime.monster_hp_popup_value = amount;
+	}
+	dungeon_runtime.monster_hp_popup_ticks = DUNGEON_POPUP_TICKS;
+	if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_INPUT) {
+		dungeon_runtime.monster_shake_ticks = DUNGEON_SHAKE_TICKS;
+	}
+}
+
+static void dungeon_register_monster_armor_loss(int16_t amount) {
+	if (amount <= 0) {
+		return;
+	}
+
+	if (dungeon_runtime.monster_armor_popup_ticks > 0) {
+		dungeon_runtime.monster_armor_popup_value += amount;
+	}
+	else {
+		dungeon_runtime.monster_armor_popup_value = amount;
+	}
+	dungeon_runtime.monster_armor_popup_ticks = DUNGEON_POPUP_TICKS;
+}
+
+static void dungeon_update_visual_effects() {
+	if (dungeon_runtime.player_hp_popup_ticks > 0) {
+		dungeon_runtime.player_hp_popup_ticks--;
+	}
+	if (dungeon_runtime.monster_hp_popup_ticks > 0) {
+		dungeon_runtime.monster_hp_popup_ticks--;
+	}
+	if (dungeon_runtime.monster_armor_popup_ticks > 0) {
+		dungeon_runtime.monster_armor_popup_ticks--;
+	}
+	if (dungeon_runtime.player_shake_ticks > 0) {
+		dungeon_runtime.player_shake_ticks--;
+	}
+	if (dungeon_runtime.monster_shake_ticks > 0) {
+		dungeon_runtime.monster_shake_ticks--;
+	}
 }
 
 static uint8_t dungeon_effect_damage() {
@@ -497,11 +596,14 @@ static void dungeon_set_monster_stats(uint8_t monster) {
 	dungeon_runtime.battle_turn = 1;
 	dungeon_runtime.battle_phase = DUNGEON_BATTLE_PHASE_INPUT;
 	dungeon_runtime.battle_wait_ticks = 0;
+	dungeon_runtime.pre_battle_alert = 0;
 	dungeon_runtime.defend_icon_active = 0;
 	dungeon_runtime.defend_active = 0;
 	dungeon_runtime.enemy_poison_turns = 0;
 	dungeon_runtime.enemy_poison_damage = 0;
 	dungeon_runtime.monster_dodge_ready = 0;
+	dungeon_runtime.pending_attack_damage = 0;
+	dungeon_runtime.pending_attack_hit = 0;
 
 	switch (monster) {
 	case DUNGEON_MONSTER_SLIME:
@@ -542,6 +644,7 @@ static void dungeon_set_monster_stats(uint8_t monster) {
 
 static void dungeon_prepare_stage() {
 	dungeon_runtime.travel_progress = 0;
+	dungeon_runtime.pre_battle_alert = 0;
 	dungeon_runtime.current_view = DUNGEON_VIEW_TRAVEL;
 	/* Every stage meets a chest before battle, boss stage gets 2 chests. */
 	dungeon_runtime.support_event = (dungeon_runtime.stage >= dungeon_runtime.total_stages) ? 2 : 1;
@@ -590,7 +693,7 @@ static void dungeon_trigger_support() {
 		dungeon_runtime.current_view = DUNGEON_VIEW_CHEST;
 	}
 	else {
-		dungeon_start_battle();
+		dungeon_set_message("Monster appears", dungeon_monster_name[dungeon_runtime.current_monster], "MODE TO BATTLE", DUNGEON_NEXT_BATTLE);
 	}
 	dungeon_save_progress();
 }
@@ -601,11 +704,20 @@ static int16_t dungeon_player_damage(uint8_t skill) {
 	return dungeon_max_int16(damage, 1);
 }
 
-static void dungeon_enemy_take_damage(int16_t damage) {
+static void dungeon_enemy_take_damage_internal(int16_t damage, uint8_t trigger_shake) {
+	int16_t before_hp = dungeon_runtime.monster_hp;
 	dungeon_runtime.monster_hp -= damage;
 	if (dungeon_runtime.monster_hp < 0) {
 		dungeon_runtime.monster_hp = 0;
 	}
+	dungeon_register_monster_damage(before_hp - dungeon_runtime.monster_hp);
+	if (trigger_shake && (before_hp > dungeon_runtime.monster_hp)) {
+		dungeon_runtime.monster_shake_ticks = DUNGEON_SHAKE_TICKS;
+	}
+}
+
+static void dungeon_enemy_take_damage(int16_t damage) {
+	dungeon_enemy_take_damage_internal(damage, 1);
 }
 
 static uint8_t dungeon_use_best_item() {
@@ -642,11 +754,13 @@ static uint8_t dungeon_use_best_item() {
 	}
 
 	if (dungeon_runtime.inventory[DUNGEON_ITEM_BOMB] > 0) {
+		int16_t before_armor = dungeon_runtime.monster_armor;
 		dungeon_runtime.inventory[DUNGEON_ITEM_BOMB]--;
 		dungeon_runtime.monster_armor -= 3 + ((dungeon_runtime.level - 1) * 2);
 		if (dungeon_runtime.monster_armor < 0) {
 			dungeon_runtime.monster_armor = 0;
 		}
+		dungeon_register_monster_armor_loss(before_armor - dungeon_runtime.monster_armor);
 		return 1;
 	}
 
@@ -658,6 +772,7 @@ static uint8_t dungeon_turn_matches(uint8_t turn, uint8_t first, uint8_t step) {
 }
 
 static void dungeon_enemy_action() {
+	int16_t hp_before = dungeon_runtime.player_hp;
 	int16_t damage = dungeon_runtime.monster_dmg - (dungeon_runtime.player_def / 2);
 	if (dungeon_runtime.defend_active) {
 		damage /= 2;
@@ -689,9 +804,13 @@ static void dungeon_enemy_action() {
 	if (dungeon_runtime.player_hp < 0) {
 		dungeon_runtime.player_hp = 0;
 	}
+	dungeon_register_player_damage(hp_before - dungeon_runtime.player_hp);
 }
 
 static void dungeon_status_tick() {
+	int16_t player_before = dungeon_runtime.player_hp;
+	int16_t monster_before = dungeon_runtime.monster_hp;
+
 	if (dungeon_runtime.poison_turns > 0) {
 		dungeon_runtime.player_hp -= 5;
 		dungeon_runtime.poison_turns--;
@@ -714,6 +833,9 @@ static void dungeon_status_tick() {
 	if (dungeon_runtime.monster_hp < 0) {
 		dungeon_runtime.monster_hp = 0;
 	}
+
+	dungeon_register_player_damage(player_before - dungeon_runtime.player_hp);
+	dungeon_register_monster_damage(monster_before - dungeon_runtime.monster_hp);
 }
 
 static void dungeon_after_battle_win() {
@@ -731,7 +853,7 @@ static void dungeon_after_battle_win() {
 }
 
 static void dungeon_queue_enemy_turn() {
-	dungeon_runtime.battle_phase = DUNGEON_BATTLE_PHASE_HERO_WAIT;
+	dungeon_runtime.battle_phase = DUNGEON_BATTLE_PHASE_MONSTER_ATK_LUNGE;
 	dungeon_runtime.battle_wait_ticks = DUNGEON_BATTLE_WAIT_TICKS;
 }
 
@@ -841,13 +963,20 @@ void dungeon_confirm_action() {
 	switch (dungeon_runtime.selected_action) {
 	case DUNGEON_ACTION_ATTACK:
 		dungeon_runtime.defend_icon_active = 0;
+		dungeon_runtime.pending_attack_damage = dungeon_player_damage(0);
+		dungeon_runtime.pending_attack_hit = 1;
 		if ((dungeon_runtime.current_monster == DUNGEON_MONSTER_WOLF) && (dungeon_runtime.monster_dodge_ready != 0)) {
 			dungeon_runtime.monster_dodge_ready = 0;
+			dungeon_runtime.pending_attack_hit = 0;
+			dungeon_runtime.pending_attack_damage = 0;
 		}
-		else {
-			dungeon_enemy_take_damage(dungeon_player_damage(0));
-		}
-		break;
+		dungeon_runtime.battle_phase = DUNGEON_BATTLE_PHASE_HERO_ATK_LUNGE;
+		dungeon_runtime.battle_wait_ticks = DUNGEON_BATTLE_STEP_TICKS;
+		dungeon_runtime.monster_shake_ticks = 0;
+		dungeon_runtime.player_shake_ticks = 0;
+		dungeon_save_progress();
+		BUZZER_PlayTones(tones_cc);
+		return;
 
 	case DUNGEON_ACTION_ITEM:
 		dungeon_runtime.defend_icon_active = 0;
@@ -902,14 +1031,51 @@ void dungeon_tick() {
 		return;
 	}
 
+	dungeon_update_visual_effects();
+
 	if (dungeon_runtime.current_view == DUNGEON_VIEW_BATTLE) {
-		if ((dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_HERO_WAIT) || (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_MONSTER_WAIT)) {
+		if (dungeon_runtime.battle_phase != DUNGEON_BATTLE_PHASE_INPUT) {
 			if (dungeon_runtime.battle_wait_ticks > 0) {
 				dungeon_runtime.battle_wait_ticks--;
 			}
 
 			if (dungeon_runtime.battle_wait_ticks == 0) {
-				if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_HERO_WAIT) {
+				if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_HERO_ATK_LUNGE) {
+					dungeon_runtime.battle_phase = DUNGEON_BATTLE_PHASE_HERO_ATK_HIT;
+					dungeon_runtime.battle_wait_ticks = DUNGEON_BATTLE_STEP_TICKS;
+					if (dungeon_runtime.pending_attack_hit) {
+						dungeon_runtime.monster_shake_ticks = DUNGEON_BATTLE_STEP_TICKS;
+					}
+					dungeon_save_progress();
+				}
+				else if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_HERO_ATK_HIT) {
+					if (dungeon_runtime.pending_attack_hit) {
+						dungeon_enemy_take_damage_internal(dungeon_runtime.pending_attack_damage, 0);
+					}
+
+					if (dungeon_runtime.monster_hp <= 0) {
+						dungeon_after_battle_win();
+						BUZZER_PlayTones(tones_startup);
+						return;
+					}
+
+					dungeon_runtime.battle_phase = DUNGEON_BATTLE_PHASE_HERO_ATK_APPLY;
+					dungeon_runtime.battle_wait_ticks = DUNGEON_BATTLE_STEP_TICKS;
+					dungeon_save_progress();
+				}
+				else if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_HERO_ATK_APPLY) {
+					dungeon_runtime.pending_attack_damage = 0;
+					dungeon_runtime.pending_attack_hit = 0;
+					dungeon_queue_enemy_turn();
+					dungeon_save_progress();
+				}
+				else if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_MONSTER_ATK_LUNGE) {
+					dungeon_runtime.battle_phase = DUNGEON_BATTLE_PHASE_MONSTER_ATK_HIT;
+					dungeon_runtime.battle_wait_ticks = DUNGEON_BATTLE_STEP_TICKS;
+					dungeon_runtime.player_shake_ticks = DUNGEON_BATTLE_STEP_TICKS;
+					dungeon_save_progress();
+				}
+				else if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_MONSTER_ATK_HIT) {
 					dungeon_enemy_action();
 					dungeon_status_tick();
 					dungeon_runtime.battle_turn++;
@@ -929,8 +1095,8 @@ void dungeon_tick() {
 						return;
 					}
 
-					dungeon_runtime.battle_phase = DUNGEON_BATTLE_PHASE_MONSTER_WAIT;
-					dungeon_runtime.battle_wait_ticks = DUNGEON_BATTLE_WAIT_TICKS;
+					dungeon_runtime.battle_phase = DUNGEON_BATTLE_PHASE_MONSTER_ATK_APPLY;
+					dungeon_runtime.battle_wait_ticks = DUNGEON_BATTLE_STEP_TICKS;
 					dungeon_save_progress();
 				}
 				else {
@@ -946,8 +1112,16 @@ void dungeon_tick() {
 	}
 
 	/* Slow the hero down a bit so the path animation feels less rushed. */
-	uint8_t travel_step = (uint8_t)(3 + (settingsetup.arrow_speed / 2));
+	uint8_t travel_step = 1;
+	if (dungeon_control.action_image == 1) {
+		travel_step = 0;
+	}
 	dungeon_runtime.travel_progress += travel_step;
+
+	if ((dungeon_runtime.support_event == 0) && (dungeon_runtime.pre_battle_alert == 0) && (dungeon_runtime.travel_progress >= 70)) {
+		dungeon_runtime.pre_battle_alert = 1;
+	}
+
 	if (dungeon_runtime.travel_progress >= 100) {
 		dungeon_runtime.travel_progress = 100;
 		if (dungeon_runtime.support_pending) {
@@ -1023,31 +1197,35 @@ static void dungeon_draw_stats_line() {
 static void dungeon_draw_travel() {
 	int16_t hero_x = 8 + ((int16_t)dungeon_runtime.travel_progress * 84) / 100;
 	int16_t hero_y = 0;
-	uint8_t phase = (uint8_t)((dungeon_control.action_image * 5) + (dungeon_runtime.travel_progress / 3));
+	uint8_t phase = (uint8_t)((dungeon_control.action_image * 2) + (dungeon_runtime.travel_progress / 6));
+	dungeon_bitmap_t monster = dungeon_monster_bitmap(dungeon_runtime.current_monster);
 
 	view_render.fillScreen(BLACK);
 
 	for (int16_t x = 2; x < (LCD_WIDTH - 2); x++) {
-		int16_t wave_a = (x + phase) % 32;
-		int16_t wave_b = (x + (phase * 2)) % 28;
-		if (wave_a > 16) {
-			wave_a = 32 - wave_a;
+		int16_t wave_a = (x + phase) % 52;
+		int16_t wave_b = (x + (phase / 2) + 11) % 74;
+		if (wave_a > 26) {
+			wave_a = 52 - wave_a;
 		}
-		if (wave_b > 14) {
-			wave_b = 28 - wave_b;
+		if (wave_b > 37) {
+			wave_b = 74 - wave_b;
 		}
 
-		int16_t top = 24 + (wave_a / 2) - (wave_b / 3);
-		int16_t bottom = 43 - (wave_b / 2) + (wave_a / 3);
+		int16_t top = 22 + (wave_a / 5) - (wave_b / 10);
+		int16_t bottom = 47 + (wave_b / 9) - (wave_a / 12);
 
-		if (top < 14) {
-			top = 14;
+		if (top < 16) {
+			top = 16;
 		}
-		if (bottom > 51) {
-			bottom = 51;
+		if (bottom > 52) {
+			bottom = 52;
 		}
-		if (bottom <= top) {
-			bottom = top + 1;
+		if ((bottom - top) < 18) {
+			bottom = top + 18;
+		}
+		if (bottom > 52) {
+			bottom = 52;
 		}
 
 		if ((x >= hero_x) && (x <= (hero_x + 24))) {
@@ -1074,6 +1252,14 @@ static void dungeon_draw_travel() {
 
 	view_render.drawBitmap(hero_x, hero_y, hero_icon, 24, 17, BLACK);
 
+	if (dungeon_runtime.support_event == 0) {
+		int16_t monster_x = 92;
+		if (dungeon_runtime.pre_battle_alert == 0) {
+			monster_x = 118;
+		}
+		view_render.drawBitmap(monster_x, 18, monster.data, monster.width, monster.height, BLACK);
+	}
+
 	if (dungeon_runtime.support_event > 0) {
 		view_render.drawRect(108, 24, 14, 14, BLACK);
 		view_render.setCursor(112, 27);
@@ -1088,10 +1274,10 @@ static void dungeon_draw_travel() {
 	}
 	else {
 		if (dungeon_runtime.stage >= dungeon_runtime.total_stages) {
-			view_render.print("Boss ahead");
+			view_render.print("Boss visible");
 		}
 		else {
-			view_render.print("Enemy ahead");
+			view_render.print("Enemy visible");
 		}
 	}
 }
@@ -1167,16 +1353,52 @@ static void dungeon_draw_battle() {
 	int8_t hero_dy = 0;
 	int8_t monster_dx = 0;
 	int8_t monster_dy = 0;
+	uint8_t anim_progress = 0;
+	int8_t lunge = 0;
+	uint8_t monster_hit_visible = 0;
+	uint8_t hero_hit_visible = 0;
 
-	if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_HERO_WAIT) {
-		hero_dx = ((dungeon_runtime.battle_wait_ticks & 0x01) == 0) ? 2 : 0;
-		hero_dy = ((dungeon_runtime.battle_wait_ticks & 0x01) == 0) ? -1 : 0;
-		monster_dx = -1;
+	if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_HERO_ATK_LUNGE) {
+		if (dungeon_runtime.battle_wait_ticks < DUNGEON_BATTLE_STEP_TICKS) {
+			anim_progress = (uint8_t)(DUNGEON_BATTLE_STEP_TICKS - dungeon_runtime.battle_wait_ticks);
+		}
+		if (anim_progress < 5) {
+			lunge = (int8_t)(anim_progress + 1);
+		}
+		hero_dx = lunge;
+		hero_dy = (lunge > 0) ? -1 : 0;
+		monster_dx = -(lunge / 2);
 	}
-	else if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_MONSTER_WAIT) {
-		monster_dx = ((dungeon_runtime.battle_wait_ticks & 0x01) == 0) ? -2 : 0;
-		monster_dy = ((dungeon_runtime.battle_wait_ticks & 0x01) == 0) ? -1 : 0;
-		hero_dx = 1;
+	else if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_HERO_ATK_HIT) {
+		hero_dx = 3;
+		hero_dy = -1;
+		monster_hit_visible = (dungeon_runtime.pending_attack_hit != 0);
+	}
+	else if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_MONSTER_ATK_LUNGE) {
+		if (dungeon_runtime.battle_wait_ticks < DUNGEON_BATTLE_WAIT_TICKS) {
+			anim_progress = (uint8_t)(DUNGEON_BATTLE_WAIT_TICKS - dungeon_runtime.battle_wait_ticks);
+		}
+		if (anim_progress < 5) {
+			lunge = (int8_t)(anim_progress + 1);
+		}
+		else if (anim_progress < 9) {
+			lunge = (int8_t)(10 - anim_progress);
+		}
+		monster_dx = -lunge;
+		monster_dy = (lunge > 0) ? -1 : 0;
+		hero_dx = lunge / 2;
+	}
+	else if (dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_MONSTER_ATK_HIT) {
+		hero_hit_visible = 1;
+	}
+
+	if ((dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_MONSTER_ATK_HIT) || ((dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_INPUT) && (dungeon_runtime.player_shake_ticks > 0))) {
+		hero_dx += ((dungeon_runtime.player_shake_ticks & 0x02) == 0) ? 1 : -1;
+		hero_dy += ((dungeon_runtime.player_shake_ticks & 0x04) == 0) ? -1 : 1;
+	}
+	if ((monster_hit_visible != 0) || ((dungeon_runtime.battle_phase == DUNGEON_BATTLE_PHASE_INPUT) && (dungeon_runtime.monster_shake_ticks > 0))) {
+		monster_dx += ((dungeon_runtime.monster_shake_ticks & 0x02) == 0) ? 1 : -1;
+		monster_dy += ((dungeon_runtime.monster_shake_ticks & 0x04) == 0) ? -1 : 1;
 	}
 	view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
 	dungeon_draw_stats_line();
@@ -1215,6 +1437,38 @@ static void dungeon_draw_battle() {
 	}
 
 	view_render.drawBitmap(92 + monster_dx, 18 + monster_dy, monster.data, monster.width, monster.height, WHITE);
+
+	if (monster_hit_visible) {
+		/* Slash marks appear before the shake step to create a clear hit sequence. */
+		view_render.drawLine(98 + monster_dx, 20 + monster_dy, 108 + monster_dx, 30 + monster_dy, WHITE);
+		view_render.drawLine(96 + monster_dx, 26 + monster_dy, 106 + monster_dx, 36 + monster_dy, WHITE);
+		view_render.drawLine(102 + monster_dx, 22 + monster_dy, 112 + monster_dx, 32 + monster_dy, WHITE);
+	}
+	if (hero_hit_visible) {
+		view_render.drawLine(12 + hero_dx, 20 + hero_dy, 22 + hero_dx, 30 + hero_dy, WHITE);
+		view_render.drawLine(10 + hero_dx, 26 + hero_dy, 20 + hero_dx, 36 + hero_dy, WHITE);
+		view_render.drawLine(16 + hero_dx, 22 + hero_dy, 26 + hero_dx, 32 + hero_dy, WHITE);
+	}
+
+	if (dungeon_runtime.player_hp_popup_ticks > 0) {
+		uint8_t rise = (uint8_t)(dungeon_runtime.player_hp_popup_ticks / 6);
+		view_render.setCursor(2, 17 - rise);
+		view_render.print("-");
+		view_render.print(dungeon_runtime.player_hp_popup_value);
+	}
+	if (dungeon_runtime.monster_hp_popup_ticks > 0) {
+		uint8_t rise = (uint8_t)(dungeon_runtime.monster_hp_popup_ticks / 6);
+		view_render.setCursor(96, 14 - rise);
+		view_render.print("-");
+		view_render.print(dungeon_runtime.monster_hp_popup_value);
+	}
+	if (dungeon_runtime.monster_armor_popup_ticks > 0) {
+		uint8_t rise = (uint8_t)(dungeon_runtime.monster_armor_popup_ticks / 7);
+		view_render.setCursor(50, 48 - rise);
+		view_render.print("DEF-");
+		view_render.print(dungeon_runtime.monster_armor_popup_value);
+	}
+
 	view_render.setCursor(54, 24);
 	view_render.print(dungeon_monster_name[dungeon_runtime.current_monster]);
 	view_render.setCursor(54, 34);

@@ -16,7 +16,7 @@ SOURCES_CPP += sources/app/screens/scr_leaderboard.cpp
 SOURCES_CPP += sources/app/screens/scr_charts_game.cpp
 SOURCES_CPP += sources/app/screens/screens_bitmap.cpp
 
-# Bowling game 
+# Dungeon game 
 # SOURCES_CPP += sources/app/screens/ar_game_dungeon_control.cpp
 # SOURCES_CPP += sources/app/screens/ar_game_arrow.cpp
 # SOURCES_CPP += sources/app/screens/ar_game_bang.cpp
