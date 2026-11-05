@@ -27,6 +27,9 @@ OPENOCD_CFG_PATH	= /usr/local/share/openocd/scripts/board/stm32ldiscovery.cfg
 APP_START_ADDR_VAL = 0x08003000
 APP_ADDR_OPTION = -DAPP_START_ADDR=$(APP_START_ADDR_VAL)
 
+# Firmware image path, printed in FATAL "SY" register dump as addr2line command.
+FIRMWARE_AXF_OPTION = -DSYS_DBG_FIRMWARE_AXF=\"$(TARGET)\"
+
 # Define console baudrate, that is used to configure UART.
 SYS_CONSOLE_BAUDRATE = 115200
 CONSOLE_BAUDRATE_DEF = -DSYS_CONSOLE_BAUDRATE=$(SYS_CONSOLE_BAUDRATE)
@@ -190,6 +193,7 @@ GENERAL_FLAGS +=			\
 		$(OPTIMIZE_OPTION)	\
 		$(RELEASE_OPTION)	\
 		$(APP_ADDR_OPTION)	\
+		$(FIRMWARE_AXF_OPTION)	\
 		$(USB_OPTION)		\
 		$(IF_OPTION)		\
 		$(TASK_OPTION)		\

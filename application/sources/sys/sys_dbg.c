@@ -20,7 +20,78 @@
 
 #define DUMP_RAM_UNIT_SIZE			256
 
+/* firmware image path for addr2line hint (defined by Makefile) */
+#ifndef SYS_DBG_FIRMWARE_AXF
+#define SYS_DBG_FIRMWARE_AXF		"firmware.axf"
+#endif
+
+/* hardware stacked frame (same layout on every Cortex-M): R0 R1 R2 R3 R12 LR PC xPSR */
+#define SYS_DBG_STACKED_FRAME_WORDS	8
+#define SYS_DBG_STACKED_LR			5
+#define SYS_DBG_STACKED_PC			6
+
 static fatal_log_t fatal_log;
+
+/* where the "SY" fatal happened, captured by sys_dbg_fault_handler() */
+static struct {
+	uint8_t		captured;		/* 1: fatal comes from a fault handler */
+	uint8_t		frame_valid;	/* 1: pc/lr were read from the stacked frame */
+	uint32_t	sp;				/* stack pointer holding the stacked frame */
+	uint32_t	pc;				/* instruction that was executing */
+	uint32_t	lr;				/* return address of the function that was executing */
+} fault_location;
+
+/*
+ * Called from fault handlers (via SYS_DBG_FAULT_HANDLER_ENTRY) with the stack
+ * pointer pointing to the hardware stacked frame.
+ */
+void sys_dbg_fault_handler(uint32_t* sp, uint8_t c) {
+	extern uint32_t _start_ram;
+	extern uint32_t _estack;
+
+	fault_location.captured	= 1;
+	fault_location.sp		= (uint32_t)sp;
+
+	/* only read stacked frame if it is entirely inside RAM (stack may be corrupted) */
+	if (((uint32_t)sp >= (uint32_t)&_start_ram) &&
+			(((uint32_t)sp + (SYS_DBG_STACKED_FRAME_WORDS * sizeof(uint32_t))) <= (uint32_t)&_estack) &&
+			(((uint32_t)sp & 0x03) == 0)) {
+		fault_location.pc			= sp[SYS_DBG_STACKED_PC];
+		fault_location.lr			= sp[SYS_DBG_STACKED_LR];
+		fault_location.frame_valid	= 1;
+	}
+	else {
+		fault_location.frame_valid	= 0;
+	}
+
+	FATAL("SY", c);
+}
+
+/* print PC/LR of the faulting code and a ready-to-copy addr2line command to get source lines */
+static void sys_dbg_fault_location_dump() {
+	if (!fault_location.captured) {
+		return;
+	}
+
+	if (!fault_location.frame_valid) {
+		xprintf("[fault] stack pointer 0x%08X is invalid, fault location unknown\n", fault_location.sp);
+		return;
+	}
+
+	uint32_t pc = fault_location.pc;
+	uint32_t lr = fault_location.lr;
+
+	xprintf("[fault] PC 0x%08X\tLR 0x%08X\n", pc, lr);
+
+	if ((lr & 0xFF000000UL) == 0xFF000000UL) {
+		/* LR holds EXC_RETURN (fault inside an exception handler, before any call): no caller to resolve */
+		xprintf("arm-none-eabi-addr2line -e %s -a -f -C -i -p 0x%08X\n", SYS_DBG_FIRMWARE_AXF, pc);
+	}
+	else {
+		/* LR = return address | 1 (Thumb); clear bit 0 and step back into the BL/BLX to get the call site line */
+		xprintf("arm-none-eabi-addr2line -e %s -a -f -C -i -p 0x%08X 0x%08X\n", SYS_DBG_FIRMWARE_AXF, pc, (lr & ~1UL) - 2);
+	}
+}
 
 void sys_dbg_fatal(const int8_t* s, uint8_t c) {
 	extern uint32_t _start_ram;
@@ -41,6 +112,9 @@ void sys_dbg_fatal(const int8_t* s, uint8_t c) {
 #endif
 #if defined(STM32L_PLATFORM) || defined(STM32F10X_PLATFORM)
 	xprintf("%s\t%x\n", s, c);
+
+	/* system fatal from fault handler: show which code line faulted */
+	sys_dbg_fault_location_dump();
 #endif
 
 	/* read fatal data from epprom */

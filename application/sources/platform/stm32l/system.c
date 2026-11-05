@@ -231,8 +231,8 @@ void _fini() {
 /*****************************************************************************/
 /* static function defination                                                */
 /*****************************************************************************/
-void default_handler() {
-	FATAL("SY", 0xEE);
+void __attribute__((naked)) default_handler() {
+	SYS_DBG_FAULT_HANDLER_ENTRY(0xEE);
 }
 
 void reset_handler() {
@@ -321,24 +321,24 @@ uint32_t sys_stack_get_size() {
 /***************************************/
 /* cortex-M processor fault exceptions */
 /***************************************/
-void nmi_handler() {
-	FATAL("SY", 0x01);
+void __attribute__((naked)) nmi_handler() {
+	SYS_DBG_FAULT_HANDLER_ENTRY(0x01);
 }
 
-void hard_fault_handler() {
-	FATAL("SY", 0x02);
+void __attribute__((naked)) hard_fault_handler() {
+	SYS_DBG_FAULT_HANDLER_ENTRY(0x02);
 }
 
-void mem_manage_handler() {
-	FATAL("SY", 0x03);
+void __attribute__((naked)) mem_manage_handler() {
+	SYS_DBG_FAULT_HANDLER_ENTRY(0x03);
 }
 
-void bus_fault_handler() {
-	FATAL("SY", 0x04);
+void __attribute__((naked)) bus_fault_handler() {
+	SYS_DBG_FAULT_HANDLER_ENTRY(0x04);
 }
 
-void usage_fault_handler() {
-	FATAL("SY", 0x05);
+void __attribute__((naked)) usage_fault_handler() {
+	SYS_DBG_FAULT_HANDLER_ENTRY(0x05);
 }
 
 /*******************************************/
