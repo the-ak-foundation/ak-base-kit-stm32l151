@@ -56,6 +56,28 @@ typedef struct {
 		sys_dbg_fatal((const int8_t*)s, (uint8_t)c); \
 	} while (0)
 
+/*
+ * Entry for fault/exception handlers (MUST be the only content of a naked function).
+ * Pass the stack holding the hardware stacked frame (MSP or PSP, picked by
+ * EXC_RETURN bit 2) to sys_dbg_fault_handler(sp, code), without touching the stack.
+ * Uses only Thumb-1 instructions, so it builds on any Cortex-M (M0/M0+/M3/M4/M7/M23/M33).
+ */
+#define SYS_DBG_FAULT_HANDLER_ENTRY(code) \
+	__asm volatile ( \
+		"movs  r0, #4                   \n" \
+		"mov   r1, lr                   \n" \
+		"tst   r0, r1                   \n" \
+		"beq   1f                       \n" \
+		"mrs   r0, psp                  \n" \
+		"b     2f                       \n" \
+		"1:                             \n" \
+		"mrs   r0, msp                  \n" \
+		"2:                             \n" \
+		"movs  r1, #" #code "           \n" \
+		"bl    sys_dbg_fault_handler    \n" \
+		"b     .                        \n" \
+	)
+
 #define FATAL_PARAM(expr, s, c) \
 	do { \
 		if (!expr) { \
@@ -66,6 +88,7 @@ typedef struct {
 	} while (0)
 
 extern void sys_dbg_fatal(const int8_t* s, uint8_t c);
+extern void sys_dbg_fault_handler(uint32_t* sp, uint8_t c);
 extern void sys_dbg_func_stack_dump(uint32_t*);
 extern void sys_dbg_cpu_dump();
 extern void sys_dbg_stack_space_dump();
